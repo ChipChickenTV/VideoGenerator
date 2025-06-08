@@ -1,0 +1,33 @@
+{
+  "name": "youtube-shorts-generator",
+  "version": "1.0.0",
+  "description": "Generate YouTube Shorts videos using Remotion with mobile app design",
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render",
+    "upgrade": "remotion upgrade",
+    "render": "remotion render Root mp4",
+    "render:headless": "remotion render YouTubeShorts out/youtube-shorts.mp4",
+    "render:headless:hq": "remotion render YouTubeShorts out/youtube-shorts-hq.mp4 --crf=15 --codec=h264",
+    "render:headless:fast": "remotion render YouTubeShorts out/youtube-shorts-fast.mp4 --crf=25 --concurrency=4",
+    "render:custom": "node render.js",
+    "render:batch": "node batch-render.js"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/studio": "^4.0.0",
+    "@remotion/bundler": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "remotion": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
