@@ -1,12 +1,19 @@
 import { Composition } from 'remotion';
 import { VideoSequence } from './VideoSequence';
 import { inputData } from './inputData';
-import { useDataLoader } from './DataLoader';
-
-// Calculate total duration based on audio lengths
-const fps = 30;
+import { generateTestData, getTestTheme, getTestTitle } from './TestDataGenerator';
+import { videoSequenceSchema } from './VideoSequenceSchema';
+import { createCalculateMetadata, fps } from './CompositionHelpers';
 
 export const RemotionRoot: React.FC = () => {
+  // Generate test data for animation testing
+  const testData = generateTestData();
+  const testTheme = getTestTheme();
+  const testTitle = getTestTitle();
+
+  // Create shared calculateMetadata function
+  const calculateMetadata = createCalculateMetadata();
+
   return (
     <>
       <Composition
@@ -16,46 +23,29 @@ export const RemotionRoot: React.FC = () => {
         fps={fps}
         width={1080}
         height={1920}
+        schema={videoSequenceSchema}
         defaultProps={{
-          title: inputData[0].title,
-          media: inputData[0].media,
+          title: inputData.title,
+          media: inputData.media,
+          theme: inputData.theme,
         }}
-        calculateMetadata={async ({ props }) => {
-          // Use the same loading logic as DataLoader
-          const audioPromises = props.media.map((item: any) => {
-            return new Promise<number>((resolve) => {
-              const audio = new Audio();
-              
-              const handleLoadedMetadata = () => {
-                resolve(audio.duration);
-              };
-
-              const handleError = () => {
-                console.error('Error loading audio:', item.voice);
-                resolve(3); // fallback to 3 seconds
-              };
-
-              audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-              audio.addEventListener('error', handleError);
-              
-              audio.src = item.voice;
-              audio.load();
-            });
-          });
-
-          const durations = await Promise.all(audioPromises);
-          const totalDurationSeconds = durations.reduce((sum, duration) => sum + duration, 0);
-          const totalDurationFrames = Math.ceil(totalDurationSeconds * fps);
-          
-          return {
-            durationInFrames: totalDurationFrames,
-            props: {
-              ...props,
-              audioDurations: durations,
-            },
-          };
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id="AnimationTest"
+        component={VideoSequence}
+        durationInFrames={1} // This will be dynamically calculated
+        fps={fps}
+        width={1080}
+        height={1920}
+        schema={videoSequenceSchema}
+        defaultProps={{
+          title: testTitle,
+          media: testData,
+          theme: testTheme,
         }}
+        calculateMetadata={calculateMetadata}
       />
     </>
   );
-}; 
+};

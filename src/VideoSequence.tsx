@@ -4,20 +4,16 @@ import {
   useVideoConfig,
   Sequence,
   Audio,
+  interpolate,
 } from 'remotion';
-import { MediaItem } from './inputData';
+import { MediaItem, Theme } from './inputData';
 import { ImageSlide } from './ImageSlide';
 import { useDataLoader } from './DataLoader';
 import { PreloadedScriptText } from './PreloadedScriptText';
 import FontLoader from './FontLoader';
+import { VideoSequenceProps } from './VideoSequenceSchema';
 
-interface VideoSequenceProps {
-  title: string;
-  media: MediaItem[];
-  audioDurations?: number[];
-}
-
-export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, audioDurations }) => {
+export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, theme, audioDurations }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   
@@ -50,10 +46,16 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, audi
   const frameInCurrentSlide = frame - cumulativeFrames[currentSlideIndex];
   const currentSlideDuration = slideDurations[currentSlideIndex] || (3 * fps);
 
+  const dynamicContainerStyle: React.CSSProperties = {
+    ...containerStyle,
+    fontFamily: theme.fontFamily || containerStyle.fontFamily,
+    backgroundColor: theme.backgroundColor || containerStyle.backgroundColor,
+  };
+
   // Show loading state if data is not ready
   if (!isReady) {
     return (
-      <div style={containerStyle}>
+      <div style={dynamicContainerStyle}>
         <div style={headerStyle}>
           <span style={backButtonStyle}>&lt;</span>
           <h1 style={headerTitleStyle}>썰풀기</h1>
@@ -76,7 +78,7 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, audi
   return (
     <>
       <FontLoader />
-      <div style={containerStyle}>
+      <div style={dynamicContainerStyle}>
         {/* Static Header and Post Info */}
       <div style={headerStyle}>
         <span style={backButtonStyle}>&lt;</span>
@@ -98,17 +100,22 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, audi
 
         {/* Post Body */}
         <div style={postBodyStyle}>
-          {/* Text - Only current slide visible */}
-          {isReady && scripts[currentSlideIndex] && (
-            <div style={{ marginBottom: '40px', position: 'relative', zIndex: 10 }}>
-              <PreloadedScriptText
-                scriptText={scripts[currentSlideIndex]}
-                frameInSlide={frameInCurrentSlide}
-                slideDuration={currentSlideDuration}
-                fps={fps}
-              />
-            </div>
-          )}
+          {/* Text - Always rendered to maintain layout */}
+          <div style={{
+            marginBottom: '40px',
+            position: 'relative',
+            zIndex: 10,
+            minHeight: '88px' // Reserve space to prevent layout shift
+          }}>
+            <PreloadedScriptText
+              scriptText={isReady ? scripts[currentSlideIndex] : ''}
+              animation={media[currentSlideIndex]?.script.animation}
+              frameInSlide={frameInCurrentSlide}
+              slideDuration={currentSlideDuration}
+              fps={fps}
+              theme={theme}
+            />
+          </div>
           
           {/* Images - Overlapping sequences for crossfade */}
           <div style={imageContainerStyle}>
@@ -120,18 +127,43 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, audi
               // Extend duration for overlap except for the last slide
               const extendedDuration = isLastSlide ? duration : duration + transitionDuration;
               
+              const transition = media[index - 1]?.transition;
+              let transitionStyle: React.CSSProperties = {};
+
+              if (transition && frame >= startFrame && frame < startFrame + transition.duration) {
+                switch (transition.effect) {
+                  case 'slide-left': {
+                    const slideProgress = interpolate(frame, [startFrame, startFrame + transition.duration], [100, 0]);
+                    transitionStyle.transform = `translateX(${slideProgress}%)`;
+                    break;
+                  }
+                  case 'wipe-up': {
+                    const wipeProgress = interpolate(frame, [startFrame, startFrame + transition.duration], [100, 0]);
+                    transitionStyle.transform = `translateY(${wipeProgress}%)`;
+                    break;
+                  }
+                  case 'circle-open': {
+                    // Circle expands from 0% to 150% to ensure it covers the corners of the rectangle
+                    const circleSize = interpolate(frame, [startFrame, startFrame + transition.duration], [0, 150]);
+                    transitionStyle.clipPath = `circle(${circleSize}% at 50% 50%)`;
+                    break;
+                  }
+                }
+              }
+
               return (
-                <Sequence
-                  key={index}
-                  from={startFrame}
-                  durationInFrames={extendedDuration}
-                >
-                  <ImageSlide 
-                    mediaItem={mediaItem} 
-                    slideDuration={duration}
-                    isLastSlide={isLastSlide}
-                  />
-                </Sequence>
+                <div key={index} style={{...transitionStyle, position: 'absolute', width: '100%', height: '100%'}}>
+                  <Sequence
+                    from={startFrame}
+                    durationInFrames={extendedDuration}
+                  >
+                    <ImageSlide
+                      mediaItem={mediaItem}
+                      slideDuration={duration}
+                      isLastSlide={isLastSlide}
+                    />
+                  </Sequence>
+                </div>
               );
             })}
           </div>
@@ -242,4 +274,4 @@ const imageContainerStyle: React.CSSProperties = {
   borderRadius: '36px',
   overflow: 'hidden',
   margin: '0 auto',
-}; 
+};

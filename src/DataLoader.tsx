@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { continueRender, delayRender } from 'remotion';
 import { MediaItem } from './inputData';
+import { getAudioDurations } from './AudioDuration';
 
 interface DataLoaderResult {
   scripts: string[];
@@ -20,7 +21,7 @@ export const useDataLoader = (media: MediaItem[]): DataLoaderResult => {
         // Load all scripts
         const scriptPromises = media.map(async (item) => {
           try {
-            const response = await fetch(item.script);
+            const response = await fetch(item.script.url);
             return await response.text();
           } catch (error) {
             console.error('Error loading script:', error);
@@ -28,32 +29,14 @@ export const useDataLoader = (media: MediaItem[]): DataLoaderResult => {
           }
         });
 
-        // Load all audio durations
-        const audioPromises = media.map((item) => {
-          return new Promise<number>((resolve) => {
-            const audio = new Audio();
-            
-            const handleLoadedMetadata = () => {
-              resolve(audio.duration);
-            };
-
-            const handleError = () => {
-              console.error('Error loading audio:', item.voice);
-              resolve(3); // fallback to 3 seconds
-            };
-
-            audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-            audio.addEventListener('error', handleError);
-            
-            audio.src = item.voice;
-            audio.load();
-          });
-        });
+        // Load all audio durations using the centralized function
+        const audioUrls = media.map((item) => item.voice);
+        const audioDurationsPromise = getAudioDurations(audioUrls);
 
         // Wait for all data to load
         const [loadedScripts, loadedDurations] = await Promise.all([
           Promise.all(scriptPromises),
-          Promise.all(audioPromises)
+          audioDurationsPromise,
         ]);
 
         setScripts(loadedScripts);
