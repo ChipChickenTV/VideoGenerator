@@ -65,8 +65,24 @@ export interface VideoData {
   media: MediaItem[];
 }
 
-// Import JSON file directly
-import inputJsonData from '../input.json';
+// Conditionally import the JSON file based on the environment.
+let inputData: VideoData;
+
+// When rendering the video with `remotion render`, the environment is 'production'.
+// In that case, we don't want to bundle the local `input.json` file,
+// because the data will be passed via the `--propsFile` flag.
+// We create a mock object that satisfies the `VideoData` type to avoid errors.
+if (process.env.NODE_ENV === 'production') {
+  inputData = {
+    theme: {},
+    title: 'Placeholder Title',
+    media: [],
+  };
+} else {
+  // In any other environment (like Remotion Studio), we load the local JSON for preview.
+  // We use `require` for conditional loading, as `import` must be at the top level.
+  inputData = require('../input.json');
+}
 
 // The input data is now a single VideoData object.
-export const inputData: VideoData = inputJsonData;
+export { inputData };
