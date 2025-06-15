@@ -1,13 +1,15 @@
 const { execSync } = require('child_process');
 const path = require('path');
 
-// 1. Generate dynamic output name from command-line arguments or a timestamp
-const argName = process.argv[2];
-const outputName = argName || `youtube-shorts-${Date.now()}`;
+// 1. Get output name from the first argument or generate a timestamped one.
+const outputArg = process.argv[2];
+const outputName = outputArg || `youtube-shorts-${Date.now()}`;
 const outputLocation = path.join('out', `${outputName}.mp4`);
 
-// 2. Construct the remotion render command.
-// We pass --propsFile to solve the NaN issue by letting Remotion handle data loading.
+// 2. Get the input JSON file from the second argument, or use 'input.json' as a default.
+const inputFile = process.argv[3] || 'input.json';
+
+// 3. Construct the remotion render command.
 // Using npx ensures we use the locally installed Remotion CLI.
 const command = [
   'npx',
@@ -15,7 +17,7 @@ const command = [
   'render',
   'YouTubeShorts',
   outputLocation,
-  '--propsFile=input.json'
+  `--propsFile=${inputFile}`
 ].join(' ');
 
 console.log(`🎬 Executing command: ${command}`);
