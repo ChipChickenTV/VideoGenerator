@@ -13,9 +13,37 @@ import { PreloadedScriptText } from './PreloadedScriptText';
 import FontLoader from './FontLoader';
 import { VideoSequenceProps } from './VideoSequenceSchema';
 
-export const VideoSequence: React.FC<VideoSequenceProps> = ({ title, media, theme, audioDurations }) => {
+export const VideoSequence: React.FC<VideoSequenceProps> = ({ 
+  title = "제목 없음", 
+  media = [], 
+  theme = {}, 
+  audioDurations 
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  
+  // 데이터가 없으면 에러 상태 표시
+  if (!media || media.length === 0) {
+    return (
+      <div style={containerStyle}>
+        <div style={headerStyle}>
+          <span style={backButtonStyle}>&lt;</span>
+          <h1 style={headerTitleStyle}>썰풀기</h1>
+          <div style={profileIconStyle}>P</div>
+        </div>
+        <div style={{
+          ...postAreaStyle,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: '48px',
+          color: '#ff6b6b'
+        }}>
+          입력 데이터가 없습니다
+        </div>
+      </div>
+    );
+  }
   
   // Load all data upfront
   const { scripts, audioDurations: loadedDurations, isReady } = useDataLoader(media);

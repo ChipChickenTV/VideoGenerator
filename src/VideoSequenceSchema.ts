@@ -11,7 +11,7 @@ import {
 
 // Define the schema for VideoSequence props using const arrays from inputData
 export const videoSequenceSchema = z.object({
-  title: z.string(),
+  title: z.string().optional(),
   media: z.array(z.object({
     image: z.object({
       url: z.string().url(),
@@ -33,13 +33,13 @@ export const videoSequenceSchema = z.object({
       effect: z.enum(transitionEffects),
       duration: z.number(),
     }).optional(),
-  })),
+  })).optional(),
   theme: z.object({
     fontFamily: z.string().optional(),
     textColor: zColor().optional(),
     backgroundColor: zColor().optional(),
     layout: z.enum(['text-top', 'text-middle', 'text-bottom']).optional(),
-  }),
+  }).optional(),
   audioDurations: z.array(z.number()).optional(),
 });
 

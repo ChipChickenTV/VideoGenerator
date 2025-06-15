@@ -1,9 +1,9 @@
 import { Composition } from 'remotion';
 import { VideoSequence } from './VideoSequence';
-import { inputData } from './inputData';
 import { generateTestData, getTestTheme, getTestTitle } from './TestDataGenerator';
 import { videoSequenceSchema } from './VideoSequenceSchema';
 import { createCalculateMetadata, fps } from './CompositionHelpers';
+import inputJsonData from '../input.json';
 
 export const RemotionRoot: React.FC = () => {
   // Generate test data for animation testing
@@ -25,9 +25,9 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={videoSequenceSchema}
         defaultProps={{
-          title: inputData.title,
-          media: inputData.media,
-          theme: inputData.theme,
+          title: inputJsonData.title,
+          media: inputJsonData.media,
+          theme: inputJsonData.theme
         }}
         calculateMetadata={calculateMetadata}
       />
