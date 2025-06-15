@@ -1,74 +1,39 @@
-const { bundle } = require('@remotion/bundler');
-const { renderMedia, selectComposition } = require('@remotion/renderer');
+const { execSync } = require('child_process');
 const path = require('path');
-const fs = require('fs');
 
-// Command line arguments
-const args = process.argv.slice(2);
-const outputName = args[0] || `youtube-shorts-${Date.now()}`;
-const quality = args[1] || 'normal'; // normal, high, fast
+// 1. Generate dynamic output name from command-line arguments or a timestamp
+const argName = process.argv[2];
+const outputName = argName || `youtube-shorts-${Date.now()}`;
+const outputLocation = path.join('out', `${outputName}.mp4`);
 
-// Quality presets
-const qualityPresets = {
-  fast: { crf: 25, concurrency: 4 },
-  normal: { crf: 18, concurrency: 2 },
-  high: { crf: 12, concurrency: 1 },
-};
+// 2. Construct the remotion render command.
+// We pass --propsFile to solve the NaN issue by letting Remotion handle data loading.
+// Using npx ensures we use the locally installed Remotion CLI.
+const command = [
+  'npx',
+  'remotion',
+  'render',
+  'YouTubeShorts',
+  outputLocation,
+  '--propsFile=input.json'
+].join(' ');
 
-const start = async () => {
-  console.log('🎬 Starting headless render...');
-  console.log(`📁 Output: out/${outputName}.mp4`);
-  console.log(`⚙️  Quality: ${quality}`);
-  
-  // Ensure output directory exists
-  if (!fs.existsSync('out')) {
-    fs.mkdirSync('out');
-  }
+console.log(`🎬 Executing command: ${command}`);
+console.log('---');
 
-  const bundleLocation = await bundle(path.resolve('./src/index.ts'), () => undefined, {
-    webpackOverride: (config) => config,
-  });
+try {
+  // 3. Execute the command and show output in real-time.
+  // stdio: 'inherit' pipes the child process's output directly to this process's output.
+  execSync(command, { stdio: 'inherit' });
 
-  const composition = await selectComposition({
-    serveUrl: bundleLocation,
-    id: 'YouTubeShorts',
-  });
+  console.log('---');
+  console.log(`\n✅ Render completed successfully!`);
+  console.log(`📽️  Output: ${outputLocation}`);
 
-  const preset = qualityPresets[quality] || qualityPresets.normal;
-
-  console.log('🎥 Rendering video...');
-  const renderStart = Date.now();
-  
-  await renderMedia({
-    composition,
-    serveUrl: bundleLocation,
-    codec: 'h264',
-    crf: preset.crf,
-    outputLocation: `out/${outputName}.mp4`,
-    inputProps: {},
-    concurrency: preset.concurrency,
-    // Improved rendering options for smoother text
-    chromiumOptions: {
-      headless: true,
-      gl: 'angle',
-    },
-    // Add motion blur and frame interpolation for smoother playback
-    imageFormat: 'jpeg',
-    jpegQuality: 90,
-    // Disable hardware acceleration that might cause jitter
-    enforceAudioTrack: false,
-    onProgress: ({ renderedFrames, totalFrames }) => {
-      const progress = ((renderedFrames / totalFrames) * 100).toFixed(1);
-      process.stdout.write(`\r📊 Progress: ${progress}% (${renderedFrames}/${totalFrames} frames)`);
-    },
-  });
-  
-  const renderTime = ((Date.now() - renderStart) / 1000).toFixed(1);
-  console.log(`\n✅ Render completed in ${renderTime}s!`);
-  console.log(`📽️  Output: out/${outputName}.mp4`);
-};
-
-start().catch((err) => {
-  console.error('❌ Render failed:', err);
+} catch (error) {
+  // The error output from Remotion will be visible thanks to stdio: 'inherit'.
+  // We just need to signal that the script failed.
+  console.error(`\n---`);
+  console.error('❌ Render script failed.');
   process.exit(1);
-}); 
+}
