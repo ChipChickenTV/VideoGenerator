@@ -3,7 +3,6 @@ import { VideoSequence } from './VideoSequence';
 import { generateTestData, getTestTheme, getTestTitle } from './TestDataGenerator';
 import { videoSequenceSchema } from './VideoSequenceSchema';
 import { createCalculateMetadata, fps } from './CompositionHelpers';
-import inputJsonData from '../input.json';
 
 export const RemotionRoot: React.FC = () => {
   // Generate test data for animation testing
@@ -24,11 +23,6 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         schema={videoSequenceSchema}
-        defaultProps={{
-          title: inputJsonData.title,
-          media: inputJsonData.media,
-          theme: inputJsonData.theme
-        }}
         calculateMetadata={calculateMetadata}
       />
       <Composition

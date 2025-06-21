@@ -1,30 +1,51 @@
 const { execSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
-// 1. Get input file from the first argument, default to 'input.json'
-const inputFile = process.argv[2] || 'input.json';
+// 1. Get output name from the first argument
+const outputNameArg = process.argv[2];
 
-// 2. Get output name from the second argument or generate a timestamped one
-const outputArg = process.argv[3];
-const outputName = outputArg || `youtube-shorts-${Date.now()}`;
-const outputLocation = path.join('out', `${outputName}.mp4`);
+// 2. Get input file from the second argument
+const inputFile = process.argv[3];
 
-// 3. Construct the remotion render command
+// 3. Validate arguments
+if (!outputNameArg || !inputFile) {
+  console.error('❌ Incorrect arguments. Usage: npm run render:headless -- <outputName> <inputFile.json>');
+  process.exit(1);
+}
+
+const outputLocation = path.join('out', `${outputNameArg}.mp4`);
+
+let props;
+try {
+  // 4. Read and parse the props file
+  const propsString = fs.readFileSync(inputFile, 'utf-8');
+  props = JSON.parse(propsString);
+} catch (error) {
+  console.error(`❌ Error reading or parsing props file: ${inputFile}`);
+  console.error(error);
+  process.exit(1);
+}
+
+// 5. Stringify the props object, then stringify it again for safe command line passing on Windows
+const propsStringForCli = JSON.stringify(JSON.stringify(props));
+
+// 6. Construct the remotion render command using --props
 const command = [
   'npx',
   'remotion',
   'render',
   'YouTubeShorts',
   outputLocation,
-  `--propsFile=${inputFile}`
+  `--props=${propsStringForCli}` // Pass the double-stringified props
 ].join(' ');
 
 console.log(`🎬 Using input file: ${inputFile}`);
-console.log(`🎬 Executing command: ${command}`);
+console.log(`🎬 Executing command...`);
 console.log('---');
 
 try {
-  // 4. Execute the command
+  // 7. Execute the command
   execSync(command, { stdio: 'inherit' });
 
   console.log('---');

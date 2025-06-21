@@ -13,17 +13,24 @@ import { PreloadedScriptText } from './PreloadedScriptText';
 import FontLoader from './FontLoader';
 import { VideoSequenceProps } from './VideoSequenceSchema';
 
-export const VideoSequence: React.FC<VideoSequenceProps> = ({ 
-  title = "제목 없음", 
-  media = [], 
-  theme = {}, 
-  audioDurations 
-}) => {
+export const VideoSequence: React.FC<any> = (props) => {
+  // On Windows, props can be double-stringified. We need to parse it.
+  const parsedProps: VideoSequenceProps = typeof props === 'string' ? JSON.parse(props) : props;
+  
+  const {
+    title = "제목 없음",
+    media = [],
+    theme = {},
+    audioDurations
+  } = parsedProps;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   
+  // Filter out media items that don't have a valid image URL
+  const validMedia = media.filter(item => item.image && typeof item.image.url === 'string') as MediaItem[];
+
   // 데이터가 없으면 에러 상태 표시
-  if (!media || media.length === 0) {
+  if (!validMedia || validMedia.length === 0) {
     return (
       <div style={containerStyle}>
         <div style={headerStyle}>
@@ -46,10 +53,10 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
   }
   
   // Load all data upfront
-  const { scripts, audioDurations: loadedDurations, isReady } = useDataLoader(media);
+  const { scripts, audioDurations: loadedDurations, isReady } = useDataLoader(validMedia);
   
   // Use loaded durations or fallback to provided ones
-  const finalDurations = isReady ? loadedDurations : (audioDurations || media.map(() => 3));
+  const finalDurations = isReady ? loadedDurations : (audioDurations || validMedia.map(() => 3));
   
   // Calculate durations in frames for each slide based on audio length
   const slideDurations = finalDurations.map(duration => Math.ceil(duration * fps));
@@ -137,7 +144,7 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
           }}>
             <PreloadedScriptText
               scriptText={isReady ? scripts[currentSlideIndex] : ''}
-              animation={media[currentSlideIndex]?.script.animation}
+              animation={validMedia[currentSlideIndex]?.script.animation}
               frameInSlide={frameInCurrentSlide}
               slideDuration={currentSlideDuration}
               fps={fps}
@@ -147,15 +154,15 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
           
           {/* Images - Overlapping sequences for crossfade */}
           <div style={imageContainerStyle}>
-            {media.map((mediaItem, index) => {
+            {validMedia.map((mediaItem, index) => {
               const startFrame = cumulativeFrames[index];
               const duration = slideDurations[index];
-              const isLastSlide = index === media.length - 1;
+              const isLastSlide = index === validMedia.length - 1;
               
               // Extend duration for overlap except for the last slide
               const extendedDuration = isLastSlide ? duration : duration + transitionDuration;
               
-              const transition = media[index - 1]?.transition;
+              const transition = validMedia[index - 1]?.transition;
               let transitionStyle: React.CSSProperties = {};
 
               if (transition && frame >= startFrame && frame < startFrame + transition.duration) {
@@ -199,7 +206,7 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
       </div>
 
       {/* Audio sequences */}
-      {media.map((item, index) => (
+      {validMedia.map((item, index) => (
         <Sequence
           key={`audio-${index}`}
           from={cumulativeFrames[index]}
@@ -222,7 +229,7 @@ const containerStyle: React.CSSProperties = {
   flexDirection: 'column',
   borderRadius: '72px',
   overflow: 'hidden',
-  fontFamily: '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
+  fontFamily: '"Pretendard Variable", Pretard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif',
 };
 
 const headerStyle: React.CSSProperties = {

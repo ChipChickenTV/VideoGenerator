@@ -14,21 +14,21 @@ export const videoSequenceSchema = z.object({
   title: z.string().optional(),
   media: z.array(z.object({
     image: z.object({
-      url: z.string().url(),
+      url: z.string().url().optional(),
       animation: z.object({
         effect: z.enum(imageAnimationEffects).optional(),
         filter: z.enum(imageAnimationFilters).optional(),
       }).optional(),
     }),
     script: z.object({
-      url: z.string().url(),
+      url: z.string().url().optional(),
       animation: z.object({
         in: z.enum(scriptAnimationInTypes).optional(),
         out: z.enum(scriptAnimationOutTypes).optional(),
         highlight: z.enum(scriptAnimationHighlightTypes).optional(),
       }).optional(),
     }),
-    voice: z.string().url(),
+    voice: z.string().url().optional(),
     transition: z.object({
       effect: z.enum(transitionEffects),
       duration: z.number(),
