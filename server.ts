@@ -10,7 +10,7 @@ const PORT = parseInt(process.env.PORT || '3030', 10);
 app.use(express.json());
 
 // 렌더링된 비디오를 제공하기 위한 정적 파일 서버 설정
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'out')));
 
 // 비디오 렌더링을 위한 POST 엔드포인트
 app.post('/render', (req, res) => {
@@ -89,8 +89,7 @@ app.post('/render', (req, res) => {
         res.status(200).send({ 
             message: 'Video rendered successfully!',
             outputPath: outputFilePath,
-            videoUrl: videoUrl,
-            logs: stdout
+            videoUrl: videoUrl
         });
     });
 
