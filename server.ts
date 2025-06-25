@@ -1,5 +1,5 @@
 import express from 'express';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -35,20 +35,51 @@ app.post('/render', (req, res) => {
     // Remotion CLI 렌더링 명령어 실행
     // [참고] 다른 Composition을 렌더링하려면 아래 "YouTubeShorts" 부분을
     // src/Root.tsx에 정의된 다른 ID(예: "AnimationTest")로 변경하세요.
-    const command = `npm run render:headless -- ${outputFileName} ${tempInputFilePath}`;
+    console.log(`🎬 Starting render: ${outputFileName}`);
+    console.log(`📄 Input file: ${tempInputFilePath}`);
 
-    console.log(`Executing command: ${command}`);
+    // spawn을 사용해서 실시간 로그 출력
+    const renderProcess = spawn('npm', ['run', 'render:headless', '--', outputFileName, tempInputFilePath], {
+        stdio: 'pipe',
+        shell: true
+    });
 
-    exec(command, (error, stdout, stderr) => {
+    let stdout = '';
+    let stderr = '';
+
+    // 실시간 stdout 로그 출력
+    renderProcess.stdout.on('data', (data) => {
+        const output = data.toString();
+        stdout += output;
+        console.log(`[RENDER] ${output.trim()}`);
+    });
+
+    // 실시간 stderr 로그 출력
+    renderProcess.stderr.on('data', (data) => {
+        const error = data.toString();
+        stderr += error;
+        console.error(`[RENDER ERROR] ${error.trim()}`);
+    });
+
+    // 프로세스 완료 처리
+    renderProcess.on('close', (code) => {
         // 렌더링이 끝나면 임시 입력 파일 삭제
-        fs.unlinkSync(tempInputFilePath);
-
-        if (error) {
-            console.error(`exec error: ${error}`);
-            return res.status(500).send({ error: 'Failed to render video.', details: stderr });
+        try {
+            fs.unlinkSync(tempInputFilePath);
+        } catch (err) {
+            console.error('Failed to delete temp file:', err);
         }
 
-        console.log(`stdout: ${stdout}`);
+        if (code !== 0) {
+            console.error(`🚫 Render process exited with code ${code}`);
+            return res.status(500).send({ 
+                error: 'Failed to render video.', 
+                details: stderr,
+                exitCode: code 
+            });
+        }
+
+        console.log(`✅ Render completed successfully!`);
         
         // 렌더링된 파일에 접근할 수 있는 URL 생성 (요청된 호스트 자동 감지)
         const host = req.get('host') || `localhost:${PORT}`;
@@ -58,7 +89,24 @@ app.post('/render', (req, res) => {
         res.status(200).send({ 
             message: 'Video rendered successfully!',
             outputPath: outputFilePath,
-            videoUrl: videoUrl
+            videoUrl: videoUrl,
+            logs: stdout
+        });
+    });
+
+    // 프로세스 에러 처리
+    renderProcess.on('error', (error) => {
+        console.error(`🚫 Failed to start render process:`, error);
+        
+        try {
+            fs.unlinkSync(tempInputFilePath);
+        } catch (err) {
+            console.error('Failed to delete temp file:', err);
+        }
+
+        res.status(500).send({ 
+            error: 'Failed to start render process.', 
+            details: error.message 
         });
     });
 });
