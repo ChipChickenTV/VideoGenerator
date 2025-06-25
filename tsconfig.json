@@ -17,6 +17,7 @@
   },
   "include": [
     "src",
-    "remotion.config.ts"
+    "remotion.config.ts",
+    "server.ts"
   ]
-} 
+}
