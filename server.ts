@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const PORT = process.env.PORT || 3030;
+const PORT = parseInt(process.env.PORT || '3030', 10);
 
 // POST 요청의 body를 json으로 파싱하기 위함
 app.use(express.json());
@@ -50,8 +50,10 @@ app.post('/render', (req, res) => {
 
         console.log(`stdout: ${stdout}`);
         
-        // 렌더링된 파일에 접근할 수 있는 URL 생성
-        const videoUrl = `http://localhost:${PORT}/static/${outputFileName}`;
+        // 렌더링된 파일에 접근할 수 있는 URL 생성 (요청된 호스트 자동 감지)
+        const host = req.get('host') || `localhost:${PORT}`;
+        const protocol = req.secure ? 'https' : 'http';
+        const videoUrl = `${protocol}://${host}/static/${outputFileName}.mp4`;
 
         res.status(200).send({ 
             message: 'Video rendered successfully!',
@@ -61,6 +63,9 @@ app.post('/render', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on all interfaces:${PORT}`);
+    console.log(`Local access: http://localhost:${PORT}`);
+    console.log(`POST endpoint: /render`);
+    console.log(`External access available via your public IP`);
 });
