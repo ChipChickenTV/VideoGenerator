@@ -1,0 +1,220 @@
+{
+  "categories": [
+    {
+      "type": "image",
+      "title": "🖼️ 이미지 애니메이션",
+      "animations": [
+        {
+          "type": "image",
+          "name": "none",
+          "description": "정적 이미지 - 애니메이션 없음",
+          "durationInFrames": 90
+        },
+        {
+          "type": "image",
+          "name": "zoom-in",
+          "description": "이미지가 서서히 확대되는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "image",
+          "name": "pan-right",
+          "description": "이미지가 오른쪽으로 팬하는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "image",
+          "name": "zoom-out",
+          "description": "이미지가 서서히 축소되는 효과",
+          "durationInFrames": 90
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "📝 텍스트 애니메이션",
+      "animations": [
+        {
+          "type": "text",
+          "name": "none",
+          "description": "애니메이션 없음",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "fadeIn",
+          "description": "텍스트가 서서히 나타나는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "fadeOut",
+          "description": "텍스트가 서서히 사라지는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "typing",
+          "description": "텍스트가 타이핑되어 나타나는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "word-by-word-fade",
+          "description": "단어 청크별 페이드 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "slideUp",
+          "description": "텍스트가 아래에서 위로 슬라이드하며 나타나는 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "text",
+          "name": "slideDown",
+          "description": "텍스트가 위에서 아래로 슬라이드하며 사라지는 효과",
+          "durationInFrames": 90
+        }
+      ]
+    },
+    {
+      "type": "transition",
+      "title": "🎬 씬 전환 효과",
+      "animations": [
+        {
+          "type": "transition",
+          "name": "none",
+          "description": "애니메이션 없는 즉시 전환",
+          "durationInFrames": 180
+        },
+        {
+          "type": "transition",
+          "name": "fade",
+          "description": "페이드 인/아웃 전환 효과",
+          "durationInFrames": 180
+        },
+        {
+          "type": "transition",
+          "name": "slide-left",
+          "description": "왼쪽으로 슬라이드 전환 효과",
+          "durationInFrames": 180
+        },
+        {
+          "type": "transition",
+          "name": "slide-right",
+          "description": "오른쪽으로 슬라이드 전환 효과",
+          "durationInFrames": 180
+        },
+        {
+          "type": "transition",
+          "name": "wipe-up",
+          "description": "위로 와이프하는 전환 효과",
+          "durationInFrames": 180
+        }
+      ]
+    },
+    {
+      "type": "filter",
+      "title": "🎨 이미지 필터",
+      "animations": [
+        {
+          "type": "filter",
+          "name": "none",
+          "description": "필터 없음",
+          "durationInFrames": 90
+        },
+        {
+          "type": "filter",
+          "name": "grayscale",
+          "description": "흑백 필터",
+          "durationInFrames": 90
+        },
+        {
+          "type": "filter",
+          "name": "sepia",
+          "description": "세피아 필터",
+          "durationInFrames": 90
+        },
+        {
+          "type": "filter",
+          "name": "blur",
+          "description": "블러 필터",
+          "durationInFrames": 90
+        }
+      ]
+    },
+    {
+      "type": "highlight",
+      "title": "🖍️ 텍스트 하이라이트",
+      "animations": [
+        {
+          "type": "highlight",
+          "name": "yellow-box",
+          "description": "노란색 박스",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "underline",
+          "description": "밑줄",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "red-box",
+          "description": "빨간색 박스",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "blue-box",
+          "description": "파란색 박스",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "green-box",
+          "description": "초록색 박스",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "bold",
+          "description": "굵게",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "italic",
+          "description": "기울임",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "glow",
+          "description": "발광 효과",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "strike",
+          "description": "취소선",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "outline",
+          "description": "외곽선",
+          "durationInFrames": 90
+        },
+        {
+          "type": "highlight",
+          "name": "none",
+          "description": "하이라이트 없음",
+          "durationInFrames": 90
+        }
+      ]
+    }
+  ]
+}

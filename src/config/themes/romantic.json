@@ -1,0 +1,79 @@
+{
+  "themePreset": "romantic",
+  "fontFamily": "Playfair Display, serif",
+  "fontSize": {
+    "title": "48px",
+    "text": "48px",
+    "meta": "36px"
+  },
+  "fontWeight": {
+    "title": 400,
+    "text": 400,
+    "meta": 400
+  },
+  "fontStyle": {
+    "title": "italic",
+    "text": "italic"
+  },
+  "textColor": "#8b4789",
+  "titleColor": "#8b4789",
+  "metaColor": "#c71585",
+  "backgroundColor": "#ff9a9e",
+  "backgroundGradient": {
+    "type": "linear",
+    "direction": "135deg",
+    "colors": [
+      { "color": "#ff9a9e", "stop": "0%" },
+      { "color": "#fecfef", "stop": "50%" },
+      { "color": "#fecfef", "stop": "100%" }
+    ]
+  },
+  "headerColor": "#ffc0cb",
+  "headerGradient": {
+    "type": "linear",
+    "direction": "90deg",
+    "colors": [
+      { "color": "#ffc0cb", "stop": "0%" },
+      { "color": "#ffb6c1", "stop": "100%" }
+    ]
+  },
+  "layout": "text-middle",
+  "textAlign": "center",
+  "lineHeight": "1.8",
+  "headerStyle": {
+    "textAlign": "center",
+    "borderBottom": {
+      "enabled": true,
+      "width": "1px",
+      "style": "solid",
+      "color": "#d8a7ca"
+    }
+  },
+  "postHeaderStyle": {
+    "borderBottom": {
+      "enabled": true,
+      "width": "3px",
+      "style": "solid",
+      "color": "#d8a7ca"
+    }
+  },
+  "textAreaStyle": {
+    "padding": "45px 30px",
+    "backgroundColor": "transparent",
+    "borderRadius": "0px"
+  },
+  "highlight": {
+    "backgroundColor": "#ffb6c1",
+    "textColor": "#8b4789",
+    "padding": "0.1em 0.3em",
+    "borderRadius": "12px",
+    "border": "1px solid #ff69b4"
+  },
+  "decorations": [
+    {
+      "before": "💕",
+      "after": "💕",
+      "position": "header"
+    }
+  ]
+} 

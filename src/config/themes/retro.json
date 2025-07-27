@@ -1,0 +1,88 @@
+{
+  "themePreset": "retro",
+  "fontFamily": "DungGeunMo, Pretendard, sans-serif",
+  "fontSize": {
+    "title": "48px",
+    "text": "48px",
+    "meta": "36px"
+  },
+  "fontWeight": {
+    "title": 700,
+    "text": 400,
+    "meta": 400
+  },
+  "textColor": "#2c2c2c",
+  "titleColor": "#8b4513",
+  "metaColor": "#a0522d",
+  "backgroundColor": "#ff9a9e",
+  "backgroundGradient": {
+    "type": "linear",
+    "direction": "45deg",
+    "colors": [
+      { "color": "#ff9a9e", "stop": "0%" },
+      { "color": "#fecfef", "stop": "50%" },
+      { "color": "#fecfef", "stop": "100%" }
+    ]
+  },
+  "headerColor": "#ff6b6b",
+  "headerGradient": {
+    "type": "linear",
+    "direction": "90deg",
+    "colors": [
+      { "color": "#ff6b6b", "stop": "0%" },
+      { "color": "#feca57", "stop": "100%" }
+    ]
+  },
+  "layout": "text-middle",
+  "textAlign": "center",
+  "border": {
+    "enabled": true,
+    "width": "4px",
+    "style": "solid",
+    "color": "#8b4513",
+    "radius": "16px"
+  },
+  "headerStyle": {
+    "textAlign": "center",
+    "borderBottom": {
+      "enabled": true,
+      "width": "3px",
+      "style": "solid",
+      "color": "#8b4513"
+    }
+  },
+  "postHeaderStyle": {
+    "borderBottom": {
+      "enabled": true,
+      "width": "6px",
+      "style": "dotted",
+      "color": "#8b4513"
+    }
+  },
+  "textAreaStyle": {
+    "padding": "45px 30px",
+    "backgroundColor": "transparent",
+    "borderRadius": "0px"
+  },
+  "highlight": {
+    "backgroundColor": "#ff6b6b",
+    "textColor": "white",
+    "padding": "0.2em 0.4em",
+    "borderRadius": "8px",
+    "border": "2px solid #8b4513"
+  },
+  "decorations": [
+    {
+      "before": "♪♫♪",
+      "after": "",
+      "position": "header"
+    }
+  ],
+  "animations": {
+    "bounce": {
+      "enabled": true,
+      "duration": "2s",
+      "timing": "infinite"
+    }
+  }
+} 

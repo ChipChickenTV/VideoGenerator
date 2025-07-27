@@ -1,0 +1,107 @@
+{
+  "themePreset": "neon",
+  "fontFamily": "Orbitron, sans-serif",
+  "fontSize": {
+    "title": "48px",
+    "text": "48px",
+    "meta": "36px"
+  },
+  "fontWeight": {
+    "title": 700,
+    "text": 600,
+    "meta": 400
+  },
+  "textColor": "#f0f0f0",
+  "titleColor": "#f0f0f0",
+  "metaColor": "#a9a9a9",
+  "backgroundColor": "#1a0933",
+  "backgroundGradient": {
+    "type": "radial",
+    "position": "center",
+    "colors": [
+      { "color": "#1a0933", "stop": "0%" },
+      { "color": "#0d0221", "stop": "70%" }
+    ]
+  },
+  "headerColor": "#1a0933",
+  "headerGradient": {
+    "type": "linear",
+    "direction": "90deg",
+    "colors": [
+      { "color": "#1a0933", "stop": "0%" },
+      { "color": "#26174a", "stop": "100%" }
+    ]
+  },
+  "layout": "text-middle",
+  "textAlign": "center",
+  "border": {
+    "enabled": true,
+    "width": "2px",
+    "style": "solid",
+    "color": "#ff00ff",
+    "radius": "24px"
+  },
+  "textEffect": {
+    "shadow": {
+      "enabled": true,
+      "x": 0,
+      "y": 0,
+      "blur": 4,
+      "color": "#ff00ff"
+    }
+  },
+  "titleEffect": {
+    "shadow": {
+      "enabled": true,
+      "x": 0,
+      "y": 0,
+      "blur": 8,
+      "color": "#ff00ff"
+    }
+  },
+  "headerStyle": {
+    "textAlign": "center",
+    "borderBottom": {
+      "enabled": true,
+      "width": "1px",
+      "style": "solid",
+      "color": "#ff00ff"
+    }
+  },
+  "postHeaderStyle": {
+    "borderBottom": {
+      "enabled": true,
+      "width": "3px",
+      "style": "solid",
+      "color": "#ff00ff"
+    }
+  },
+  "textAreaStyle": {
+    "padding": "45px 30px",
+    "backgroundColor": "transparent",
+    "borderRadius": "0px"
+  },
+  "highlight": {
+    "backgroundColor": "#ff00ff",
+    "textColor": "#000",
+    "padding": "0.1em 0.3em",
+    "borderRadius": "4px",
+    "boxShadow": "0 0 10px #ff00ff"
+  },
+  "boxShadow": {
+    "enabled": true,
+    "x": 0,
+    "y": 0,
+    "blur": 30,
+    "spread": 0,
+    "color": "#ff00ff",
+    "inset": false
+  },
+  "animations": {
+    "flicker": {
+      "enabled": true,
+      "duration": "3s",
+      "timing": "infinite alternate"
+    }
+  }
+} 

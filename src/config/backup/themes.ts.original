@@ -1,0 +1,950 @@
+import { TemplateStyle, ThemePreset } from '../types/VideoProps';
+
+export const THEME_PRESETS: Record<ThemePreset, TemplateStyle> = {
+  // 0. Original Theme (template-examples.html 기준 3배 비율)
+  original: {
+    themePreset: 'original',
+    fontFamily: 'Pretendard, sans-serif',
+    fontSize: {
+      title: '48px',        // 16px * 3 (template-examples.html 기준)
+      text: '48px',         // 16px * 3 (template-examples.html 기준)  
+      meta: '36px',         // 12px * 3 (template-examples.html 기준)
+    },
+    fontWeight: {
+      title: 700,
+      text: 600,
+      meta: 400,
+    },
+    textColor: '#1a1a1a',     // THEME_CONSTANTS.COLORS.TEXT_PRIMARY
+    titleColor: '#1a1a1a',    // THEME_CONSTANTS.COLORS.TEXT_PRIMARY
+    metaColor: '#888',        // THEME_CONSTANTS.COLORS.TEXT_META
+    backgroundColor: '#ffffff', // THEME_CONSTANTS.COLORS.PHONE_BACKGROUND
+    headerColor: '#a5d8f3',   // THEME_CONSTANTS.COLORS.HEADER_BACKGROUND
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.4',        // THEME_CONSTANTS.TYPOGRAPHY.LINE_HEIGHT
+    letterSpacing: '-0.01em', // THEME_CONSTANTS.TYPOGRAPHY.LETTER_SPACING
+    border: {
+      enabled: true,
+      width: '0px',
+      style: 'solid',
+      color: 'transparent',
+      radius: '72px',         // 24px * 3 (template-examples.html 기준)
+    },
+    boxShadow: {
+      enabled: false,         // 원래 시스템에는 박스 시아도우가 없었음
+      x: 0,
+      y: 0,
+      blur: 0,
+      spread: 0,
+      color: 'transparent',
+      inset: false,
+    },
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: false,
+        width: '0px',
+        style: 'solid',
+        color: 'transparent',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '6px',           // 2px * 3 (template-examples.html 기준)
+        style: 'solid',
+        color: '#e0e0e0',       // THEME_CONSTANTS.COLORS.BORDER
+      }
+    },
+    textAreaStyle: {
+      padding: '45px 30px',     // 15px 10px * 3 (template-examples.html 기준)
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+  },
+
+  // 1. Dark Theme (다크 모드)
+  dark: {
+    themePreset: 'dark',
+    fontFamily: 'Pretendard, sans-serif',
+    fontSize: {
+      title: '48px',
+      text: '48px',
+      meta: '36px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 600,
+      meta: 400,
+    },
+    textColor: '#e0e6ed',
+    titleColor: '#e0e6ed',
+    metaColor: '#9ca3af',
+    backgroundColor: '#0c0c0c',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#0c0c0c', stop: '0%' },
+        { color: '#1a1a2e', stop: '50%' },
+        { color: '#16213e', stop: '100%' }
+      ]
+    },
+    headerColor: '#0f3460',
+    headerGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#0f3460', stop: '0%' },
+        { color: '#16537e', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    textEffect: {
+      shadow: {
+        enabled: false,
+        x: 0,
+        y: 0,
+        blur: 0,
+        color: 'transparent',
+      }
+    },
+    titleEffect: {
+      shadow: {
+        enabled: false,
+        x: 0,
+        y: 0,
+        blur: 0,
+        color: 'transparent',
+      }
+    },
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '1px',
+        style: 'solid',
+        color: '#2d5aa0',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '4px',
+        style: 'solid',
+        color: '#2d5aa0',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#ffd700',
+      textColor: '#000',
+      padding: '0.1em 0.3em',
+      borderRadius: '4px',
+      boxShadow: '0 2px 4px rgba(255,215,0,0.3)',
+    },
+    boxShadow: {
+      enabled: true,
+      x: 0,
+      y: 20,
+      blur: 60,
+      spread: 0,
+      color: 'rgba(0, 0, 0, 0.3)',
+      inset: false,
+    }
+  },
+
+  // 2. Minimal Theme (미니멀 테마)
+  minimal: {
+    themePreset: 'minimal',
+    fontFamily: 'Pretendard, sans-serif',
+    fontSize: {
+      title: '48px',
+      text: '48px',
+      meta: '36px',
+    },
+    fontWeight: {
+      title: 500,
+      text: 400,
+      meta: 400,
+    },
+    textColor: '#1a1a1a',
+    titleColor: '#1a1a1a',
+    metaColor: '#757575',
+    backgroundColor: '#fafafa',
+    headerColor: '#ffffff',
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.6',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '1px',
+        style: 'solid',
+        color: '#e8e8e8',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '4px',
+        style: 'solid',
+        color: '#e8e8e8',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#f0f0f0',
+      textColor: '#2c2c2c',
+      padding: '0.1em 0.2em',
+      borderRadius: '0px',
+    },
+    boxShadow: {
+      enabled: true,
+      x: 0,
+      y: 1,
+      blur: 3,
+      spread: 0,
+      color: 'rgba(0,0,0,0.1)',
+      inset: false,
+    }
+  },
+
+  // 3. Retro Theme (레트로 테마)
+  retro: {
+    themePreset: 'retro',
+    fontFamily: 'DungGeunMo, Pretendard, sans-serif',
+    fontSize: {
+      title: '48px',
+      text: '48px',
+      meta: '36px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 400,
+      meta: 400,
+    },
+    textColor: '#2c2c2c',
+    titleColor: '#8b4513',
+    metaColor: '#a0522d',
+    backgroundColor: '#ff9a9e',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '45deg',
+      colors: [
+        { color: '#ff9a9e', stop: '0%' },
+        { color: '#fecfef', stop: '50%' },
+        { color: '#fecfef', stop: '100%' }
+      ]
+    },
+    headerColor: '#ff6b6b',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#ff6b6b', stop: '0%' },
+        { color: '#feca57', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    border: {
+      enabled: true,
+      width: '4px',
+      style: 'solid',
+      color: '#8b4513',
+      radius: '16px',
+    },
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#8b4513',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '6px',
+        style: 'dotted',
+        color: '#8b4513',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#ff6b6b',
+      textColor: 'white',
+      padding: '0.2em 0.4em',
+      borderRadius: '8px',
+      border: '2px solid #8b4513',
+    },
+    decorations: [
+      {
+        before: '♪♫♪',
+        after: '',
+        position: 'header',
+      }
+    ],
+    animations: {
+      bounce: {
+        enabled: true,
+        duration: '2s',
+        timing: 'infinite',
+      }
+    }
+  },
+
+  // 4. Neon Theme (네온 테마)
+  neon: {
+    themePreset: 'neon',
+    fontFamily: 'Orbitron, sans-serif',
+    fontSize: {
+      title: '48px',
+      text: '48px',
+      meta: '36px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 600,
+      meta: 400,
+    },
+    textColor: '#f0f0f0',
+    titleColor: '#f0f0f0',
+    metaColor: '#a9a9a9',
+    backgroundColor: '#1a0933',
+    backgroundGradient: {
+      type: 'radial',
+      position: 'center',
+      colors: [
+        { color: '#1a0933', stop: '0%' },
+        { color: '#0d0221', stop: '70%' }
+      ]
+    },
+    headerColor: '#1a0933',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#1a0933', stop: '0%' },
+        { color: '#26174a', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    border: {
+      enabled: true,
+      width: '2px',
+      style: 'solid',
+      color: '#ff00ff',
+      radius: '24px',
+    },
+    textEffect: {
+      shadow: {
+        enabled: true,
+        x: 0,
+        y: 0,
+        blur: 4,
+        color: '#ff00ff',
+      }
+    },
+    titleEffect: {
+      shadow: {
+        enabled: true,
+        x: 0,
+        y: 0,
+        blur: 8,
+        color: '#ff00ff',
+      }
+    },
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '1px',
+        style: 'solid',
+        color: '#ff00ff',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#ff00ff',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#ff00ff',
+      textColor: '#000',
+      padding: '0.1em 0.3em',
+      borderRadius: '4px',
+      boxShadow: '0 0 10px #ff00ff',
+    },
+    boxShadow: {
+      enabled: true,
+      x: 0,
+      y: 0,
+      blur: 30,
+      spread: 0,
+      color: '#ff00ff',
+      inset: false,
+    },
+    animations: {
+      flicker: {
+        enabled: true,
+        duration: '3s',
+        timing: 'infinite alternate',
+      }
+    }
+  },
+
+  // 5. Nature Theme (자연 테마)
+  nature: {
+    themePreset: 'nature',
+    fontFamily: 'Gowun Dodum, serif',
+    fontSize: {
+      title: '42px',
+      text: '38px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 400,
+      meta: 400,
+    },
+    fontStyle: {
+      title: 'italic',
+      text: 'italic',
+    },
+    textColor: '#2f4f4f',
+    titleColor: '#2f4f4f',
+    metaColor: '#556b2f',
+    backgroundColor: '#a8e6cf',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#a8e6cf', stop: '0%' },
+        { color: '#dcedc1', stop: '50%' },
+        { color: '#ffd3a5', stop: '100%' }
+      ]
+    },
+    headerColor: '#8fbc8f',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#8fbc8f', stop: '0%' },
+        { color: '#98d8c8', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.8',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '2px',
+        style: 'solid',
+        color: '#556b2f',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '4px',
+        style: 'solid',
+        color: '#556b2f',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#d2b48c',
+      textColor: '#2f4f4f',
+      padding: '0.1em 0.3em',
+      borderRadius: '12px',
+      border: '1px solid #8fbc8f',
+    },
+    decorations: [
+      {
+        before: '🌿',
+        after: '🌿',
+        position: 'header',
+      }
+    ]
+  },
+
+  // 6. Newspaper Theme (신문 테마)
+  newspaper: {
+    themePreset: 'newspaper',
+    fontFamily: 'Noto Serif KR, serif',
+    fontSize: {
+      title: '42px',
+      text: '38px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 900,
+      text: 400,
+      meta: 400,
+    },
+    fontStyle: {
+      title: 'normal',
+      text: 'normal',
+    },
+    letterSpacing: '1px',
+    textColor: '#212529',
+    titleColor: '#212529',
+    metaColor: '#6c757d',
+    backgroundColor: '#fdfdfd',
+    headerColor: '#f8f9fa',
+    layout: 'text-middle',
+    textAlign: 'center',
+    textIndent: '1em',
+    lineHeight: '1.8',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'double',
+        color: '#212529',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#212529',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#fff3cd',
+      textColor: '#856404',
+      padding: '0.1em 0.2em',
+      borderRadius: '0px',
+      border: '3px solid #856404',
+    }
+  },
+
+  // 7. Comics Theme (코믹스 테마)
+  comics: {
+    themePreset: 'comics',
+    fontFamily: 'Bangers, cursive',
+    fontSize: {
+      title: '42px',
+      text: '38px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 800,
+      text: 800,
+      meta: 700,
+    },
+    textColor: '#fff',
+    titleColor: '#fff',
+    metaColor: '#fff',
+    backgroundColor: '#ff6b6b',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#ff6b6b', stop: '0%' },
+        { color: '#feca57', stop: '50%' },
+        { color: '#ff9ff3', stop: '100%' }
+      ]
+    },
+    headerColor: '#ff6b6b',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#ff6b6b', stop: '0%' },
+        { color: '#feca57', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.2',
+    textEffect: {
+      shadow: {
+        enabled: true,
+        x: 2,
+        y: 2,
+        blur: 0,
+        color: '#000',
+      }
+    },
+    titleEffect: {
+      shadow: {
+        enabled: true,
+        x: 3,
+        y: 3,
+        blur: 0,
+        color: '#000',
+      }
+    },
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '2px',
+        style: 'solid',
+        color: '#000',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '4px',
+        style: 'solid',
+        color: '#000',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#feca57',
+      textColor: '#000',
+      padding: '0.1em 0.3em',
+      borderRadius: '4px',
+    }
+  },
+
+  // 8. Tech Theme (기술 블로그 테마)
+  tech: {
+    themePreset: 'tech',
+    fontFamily: 'Source Code Pro, monospace',
+    fontSize: {
+      title: '42px',
+      text: '38px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 400,
+      meta: 400,
+    },
+    textColor: '#d4d4d4',
+    titleColor: '#569cd6',
+    metaColor: '#9cdcfe',
+    backgroundColor: '#1e1e1e',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#1e1e1e', stop: '0%' },
+        { color: '#2d2d30', stop: '50%' },
+        { color: '#1e1e1e', stop: '100%' }
+      ]
+    },
+    headerColor: '#007acc',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#007acc', stop: '0%' },
+        { color: '#0e639c', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '2px',
+        style: 'solid',
+        color: '#007acc',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#007acc',
+      }
+    },
+    textAreaStyle: {
+      backgroundColor: '#2d2d30',
+      padding: '60px 40px',
+      borderRadius: '8px',
+    },
+    highlight: {
+      backgroundColor: '#c678dd',
+      textColor: '#1e1e1e',
+      padding: '0.1em 0.3em',
+      borderRadius: '3px',
+    }
+  },
+
+  // 9. Romantic Theme (로맨틱 테마)
+  romantic: {
+    themePreset: 'romantic',
+    fontFamily: 'Playfair Display, serif',
+    fontSize: {
+      title: '42px',
+      text: '40px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 400,
+      text: 400,
+      meta: 400,
+    },
+    fontStyle: {
+      title: 'italic',
+      text: 'italic',
+    },
+    textColor: '#8b4789',
+    titleColor: '#8b4789',
+    metaColor: '#c71585',
+    backgroundColor: '#ff9a9e',
+    backgroundGradient: {
+      type: 'linear',
+      direction: '135deg',
+      colors: [
+        { color: '#ff9a9e', stop: '0%' },
+        { color: '#fecfef', stop: '50%' },
+        { color: '#fecfef', stop: '100%' }
+      ]
+    },
+    headerColor: '#ffc0cb',
+    headerGradient: {
+      type: 'linear',
+      direction: '90deg',
+      colors: [
+        { color: '#ffc0cb', stop: '0%' },
+        { color: '#ffb6c1', stop: '100%' }
+      ]
+    },
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.8',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '1px',
+        style: 'solid',
+        color: '#d8a7ca',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#d8a7ca',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#ffb6c1',
+      textColor: '#8b4789',
+      padding: '0.1em 0.3em',
+      borderRadius: '12px',
+      border: '1px solid #ff69b4',
+    },
+    decorations: [
+      {
+        before: '💕',
+        after: '💕',
+        position: 'header',
+      }
+    ]
+  },
+
+  // 10. Simple Black Theme (심플 블랙 테마)
+  'simple-black': {
+    themePreset: 'simple-black',
+    fontFamily: 'Pretendard, sans-serif',
+    fontSize: {
+      title: '42px',
+      text: '40px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 300,
+      text: 300,
+      meta: 400,
+    },
+    letterSpacing: '1px',
+    textColor: '#fff',
+    titleColor: '#fff',
+    metaColor: '#888',
+    backgroundColor: '#000',
+    headerColor: '#000',
+    layout: 'text-middle',
+    textAlign: 'center',
+    headerStyle: {
+      textAlign: 'center',
+      borderBottom: {
+        enabled: true,
+        width: '2px',
+        style: 'solid',
+        color: '#333',
+      }
+    },
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '3px',
+        style: 'solid',
+        color: '#333',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+    highlight: {
+      backgroundColor: '#fff',
+      textColor: '#000',
+      padding: '0.1em 0.3em',
+      borderRadius: '0px',
+    }
+  },
+
+  // Custom Theme (사용자 정의 테마 - 기본값)
+  custom: {
+    themePreset: 'custom',
+    fontFamily: 'Pretendard, sans-serif',
+    fontSize: {
+      title: '42px',
+      text: '38px',
+      meta: '28px',
+    },
+    fontWeight: {
+      title: 700,
+      text: 600,
+      meta: 400,
+    },
+    textColor: '#1a1a1a',
+    backgroundColor: '#ffffff',
+    headerColor: '#a5d8f3',
+    layout: 'text-middle',
+    textAlign: 'center',
+    lineHeight: '1.4',
+    letterSpacing: '-0.01em',
+    postHeaderStyle: {
+      borderBottom: {
+        enabled: true,
+        width: '4px',
+        style: 'solid',
+        color: '#e0e0e0',
+      }
+    },
+    textAreaStyle: {
+      padding: '60px 40px',
+      backgroundColor: 'transparent',
+      borderRadius: '0px',
+    },
+  }
+};
+
+// 테마 이름과 설명
+export const THEME_INFO: Record<ThemePreset, { name: string; description: string; emoji: string }> = {
+  original: {
+    name: '원본 디자인',
+    description: 'VideoWeb3 기본 스타일',
+    emoji: '📱'
+  },
+  dark: {
+    name: '다크 모드',
+    description: '우주의 신비로운 어둠 속에서',
+    emoji: '🌙'
+  },
+  minimal: {
+    name: '미니멀 테마',
+    description: '가장 적은 것으로, 가장 많은 것을',
+    emoji: '✨'
+  },
+  retro: {
+    name: '레트로 테마', 
+    description: '그 시절 우리가 사랑했던 노래들',
+    emoji: '🎵'
+  },
+  neon: {
+    name: '네온 테마',
+    description: '밤이 시작되는 도시에서',
+    emoji: '🌟'
+  },
+  nature: {
+    name: '자연 테마',
+    description: '자연이 주는 작은 선물들',
+    emoji: '🌿'
+  },
+  newspaper: {
+    name: '신문 테마',
+    description: 'AI 시대, 코딩 교육의 새로운 방향',
+    emoji: '📰'
+  },
+  comics: {
+    name: '코믹스 테마',
+    description: '영웅의 탄생! 그 순간을 포착하다!',
+    emoji: '💥'
+  },
+  tech: {
+    name: '기술 블로그 테마',
+    description: 'Clean Code와 함께하는 개발 여행',
+    emoji: '💻'
+  },
+  romantic: {
+    name: '로맨틱 테마',
+    description: '당신에게 전하는 마음',
+    emoji: '💕'
+  },
+  'simple-black': {
+    name: '심플 블랙 테마',
+    description: '본질에 집중하다',
+    emoji: '⚫'
+  },
+  custom: {
+    name: '커스텀 테마',
+    description: '나만의 독특한 스타일',
+    emoji: '🎨'
+  }
+}; 

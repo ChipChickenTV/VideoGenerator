@@ -1,0 +1,57 @@
+{
+  "themePreset": "newspaper",
+  "fontFamily": "Noto Serif KR, serif",
+  "fontSize": {
+    "title": "48px",
+    "text": "48px",
+    "meta": "36px"
+  },
+  "fontWeight": {
+    "title": 900,
+    "text": 400,
+    "meta": 400
+  },
+  "fontStyle": {
+    "title": "normal",
+    "text": "normal"
+  },
+  "letterSpacing": "1px",
+  "textColor": "#212529",
+  "titleColor": "#212529",
+  "metaColor": "#6c757d",
+  "backgroundColor": "#fdfdfd",
+  "headerColor": "#f8f9fa",
+  "layout": "text-middle",
+  "textAlign": "center",
+  "textIndent": "1em",
+  "lineHeight": "1.8",
+  "headerStyle": {
+    "textAlign": "center",
+    "borderBottom": {
+      "enabled": true,
+      "width": "3px",
+      "style": "double",
+      "color": "#212529"
+    }
+  },
+  "postHeaderStyle": {
+    "borderBottom": {
+      "enabled": true,
+      "width": "3px",
+      "style": "solid",
+      "color": "#212529"
+    }
+  },
+  "textAreaStyle": {
+    "padding": "45px 30px",
+    "backgroundColor": "transparent",
+    "borderRadius": "0px"
+  },
+  "highlight": {
+    "backgroundColor": "#fff3cd",
+    "textColor": "#856404",
+    "padding": "0.1em 0.2em",
+    "borderRadius": "0px",
+    "border": "3px solid #856404"
+  }
+} 

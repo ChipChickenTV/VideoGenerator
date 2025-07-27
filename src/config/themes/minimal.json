@@ -1,0 +1,59 @@
+{
+  "themePreset": "minimal",
+  "fontFamily": "Pretendard, sans-serif",
+  "fontSize": {
+    "title": "48px",
+    "text": "48px",
+    "meta": "36px"
+  },
+  "fontWeight": {
+    "title": 500,
+    "text": 400,
+    "meta": 400
+  },
+  "textColor": "#1a1a1a",
+  "titleColor": "#1a1a1a",
+  "metaColor": "#757575",
+  "backgroundColor": "#fafafa",
+  "headerColor": "#ffffff",
+  "layout": "text-middle",
+  "textAlign": "center",
+  "lineHeight": "1.6",
+  "headerStyle": {
+    "textAlign": "center",
+    "borderBottom": {
+      "enabled": true,
+      "width": "1px",
+      "style": "solid",
+      "color": "#e8e8e8"
+    }
+  },
+  "postHeaderStyle": {
+    "borderBottom": {
+      "enabled": true,
+      "width": "4px",
+      "style": "solid",
+      "color": "#e8e8e8"
+    }
+  },
+  "textAreaStyle": {
+    "padding": "45px 30px",
+    "backgroundColor": "transparent",
+    "borderRadius": "0px"
+  },
+  "highlight": {
+    "backgroundColor": "#f0f0f0",
+    "textColor": "#2c2c2c",
+    "padding": "0.1em 0.2em",
+    "borderRadius": "0px"
+  },
+  "boxShadow": {
+    "enabled": true,
+    "x": 0,
+    "y": 1,
+    "blur": 3,
+    "spread": 0,
+    "color": "rgba(0,0,0,0.1)",
+    "inset": false
+  }
+} 

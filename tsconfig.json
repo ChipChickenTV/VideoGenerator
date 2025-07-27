@@ -1,23 +1,24 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "lib": ["dom", "dom.iterable", "es6"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "target": "ES2018",
+    "module": "commonjs",
+    "jsx": "react-jsx",
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "lib": ["es2015"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/remotion/*": ["src/remotion/*"],
+      "@/renderer/*": ["src/renderer/*"],
+      "@/types/*": ["src/types/*"],
+      "@/animations/*": ["src/animations/*"],
+      "@/config/*": ["src/config/*"]
+    }
   },
-  "include": [
-    "src",
-    "remotion.config.ts",
-    "server.ts"
-  ]
+  "exclude": ["remotion.config.ts"]
 }

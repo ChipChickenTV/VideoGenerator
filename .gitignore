@@ -33,3 +33,8 @@ build
 input.json.bak
 *.log
 coverage 
+
+.env
+showcase/videos/
+md
+.roo
