@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "remotion-documentation": {
+      "command": "npx",
+      "args": [
+        "crawl-chat-mcp",
+        "--id=67bca5b7b57f15a3a6f8eac6",
+        "--name=remotion_documentation"
+      ],
+      "alwaysAllow": [
+        "remotion_documentation"
+      ],
+      "disabled": true
+    },
+    "context7": {
+      "type": "streamable-http",
+      "url": "https://mcp.context7.com/mcp",
+      "alwaysAllow": [
+        "resolve-library-id"
+      ]
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "theme": {
+    "fontFamily": "'Pretendard', sans-serif",
+    "textColor": "#000000",
+    "backgroundColor": "#FFFFFF",
+    "layout": "text-middle"
+  },
+  "title": "잠깐, 플라스틱은 실제로 무거워지고 있다?",
+  "media": [
+    {
+      "image": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/0.png",
+        "animation": {
+          "effect": "zoom-in",
+          "filter": "grayscale"
+        }
+      },
+      "script": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/0.txt",
+        "animation": {
+          "in": "typing",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/0.wav",
+      "transition": {
+        "effect": "slide-left",
+        "duration": 30
+      }
+    },
+    {
+      "image": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/1.png",
+        "animation": {
+          "effect": "pan-right"
+        }
+      },
+      "script": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/1.txt",
+        "animation": {
+          "in": "word-by-word-fade"
+        }
+      },
+      "voice": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/1.wav",
+      "transition": {
+        "effect": "wipe-up",
+        "duration": 45
+      }
+    },
+    {
+      "image": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/2.png",
+        "animation": {
+          "effect": "static",
+          "filter": "sepia"
+        }
+      },
+      "script": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/2.txt",
+        "animation": {
+          "in": "fadeIn"
+        }
+      },
+      "voice": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/2.wav"
+    },
+    {
+      "image": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/3.png",
+        "animation": {
+          "effect": "zoom-out"
+        }
+      },
+      "script": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/3.txt",
+        "animation": {
+          "in": "slideUp"
+        }
+      },
+      "voice": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/3.wav"
+    },
+    {
+      "image": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/4.png",
+        "animation": {
+          "effect": "ken-burns"
+        }
+      },
+      "script": {
+        "url": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/4.txt",
+        "animation": {
+          "in": "pop-in"
+        }
+      },
+      "voice": "https://ccefjirsocxncmvefzgh.supabase.co/storage/v1/object/public/uploads/fe2myq45jq/4.wav"
+    }
+  ]
+}

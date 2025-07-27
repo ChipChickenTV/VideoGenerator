@@ -1,0 +1,116 @@
+{
+  "theme": {
+    "fontFamily": "'Pretendard', sans-serif",
+    "textColor": "#000000",
+    "backgroundColor": "#FFFFFF",
+    "layout": "text-middle"
+  },
+  "title": "소개팅남이 '통금 있다'던 진짜 이유",
+  "media": [
+    {
+      "image": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/0.png",
+        "animation": {
+          "effect": "zoom-in",
+          "filter": "grayscale"
+        }
+      },
+      "script": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/0.txt",
+        "animation": {
+          "in": "typing",
+          "out": "none",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/0.wav",
+      "transition": {
+        "effect": "slide-left"
+      }
+    },
+    {
+      "image": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/1.png",
+        "animation": {
+          "effect": "pan-right",
+          "filter": "none"
+        }
+      },
+      "script": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/1.txt",
+        "animation": {
+          "in": "word-by-word-fade",
+          "out": "none",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/1.wav",
+      "transition": {
+        "effect": "wipe-up"
+      }
+    },
+    {
+      "image": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/2.png",
+        "animation": {
+          "effect": "none",
+          "filter": "sepia"
+        }
+      },
+      "script": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/2.txt",
+        "animation": {
+          "in": "fadeIn",
+          "out": "none",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/2.wav",
+      "transition": {
+        "effect": "none"
+      }
+    },
+    {
+      "image": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/3.png",
+        "animation": {
+          "effect": "zoom-out",
+          "filter": "none"
+        }
+      },
+      "script": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/3.txt",
+        "animation": {
+          "in": "slideUp",
+          "out": "none",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/3.wav",
+      "transition": {
+        "effect": "none"
+      }
+    },
+    {
+      "image": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.png",
+        "animation": {
+          "effect": "none",
+          "filter": "none"
+        }
+      },
+      "script": {
+        "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.txt",
+        "animation": {
+          "in": "fadeIn",
+          "out": "none",
+          "highlight": "yellow-box"
+        }
+      },
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.wav",
+      "transition": {
+        "effect": "none"
+      }
+    }
+  ]
+}

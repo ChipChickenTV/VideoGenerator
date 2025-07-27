@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoWeb3 애니메이션 Showcase</title>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 VideoWeb3 애니메이션 Showcase</h1>
+        <p class="subtitle">모든 애니메이션 효과를 동적으로 생성하여 확인합니다!</p>
+        <div class="filter-container">{{FILTER_BUTTONS}}</div>
+        {{CATEGORIES}}
+    </div>
+
+    <div id="videoModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <video id="modalVideoPlayer" class="modal-video" controls autoplay loop></video>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
