@@ -1,9 +1,17 @@
 import React from 'react';
-import { TemplateStyle } from '@/types/VideoProps';
+import { TemplateStyle, CSSTextAlign, isValidCSSTextAlign } from '@/types/VideoProps';
 
 /**
  * 통합 스타일 유틸리티 - 모든 스타일 관련 함수들을 제공
  */
+
+// 타입 안전한 textAlign 처리 함수
+const getTypeSafeTextAlign = (value: string | undefined, defaultValue: CSSTextAlign): CSSTextAlign => {
+  if (isValidCSSTextAlign(value)) {
+    return value;
+  }
+  return defaultValue;
+};
 
 // ===== 배경 관련 함수들 =====
 
@@ -84,7 +92,7 @@ export const generateContainerStyle = (style?: TemplateStyle): React.CSSProperti
     fontStyle: style.fontStyle?.text || 'normal',
     lineHeight: style.lineHeight || '1.4',
     letterSpacing: style.letterSpacing || '-0.01em',
-    textAlign: style.textAlign?.text as any || 'center',
+    textAlign: getTypeSafeTextAlign(style.textAlign?.text, 'center'),
     border: generateBorder(style.border),
     borderRadius: style.border?.radius || '48px',
     boxShadow: generateBoxShadow(style.boxShadow),
@@ -105,7 +113,7 @@ export const generateHeaderStyle = (style?: TemplateStyle): React.CSSProperties 
     fontSize: style.fontSize?.header || '54px',
     fontWeight: style.fontWeight?.header || 700,
     fontStyle: style.fontStyle?.header || 'normal',
-    textAlign: style.textAlign?.header as any || 'center',
+    textAlign: getTypeSafeTextAlign(style.textAlign?.header, 'center'),
     textShadow: [
       generateTextShadow(style.headerEffect),
       generateTextGlow(style.headerEffect)
@@ -123,7 +131,7 @@ export const generateTitleStyle = (style?: TemplateStyle): React.CSSProperties =
     fontWeight: style.fontWeight?.title || 700,
     fontStyle: style.fontStyle?.title || 'normal',
     fontFamily: style.fontFamily?.title || 'Pretendard, sans-serif',
-    textAlign: style.textAlign?.title as any || 'left',
+    textAlign: getTypeSafeTextAlign(style.textAlign?.title, 'left'),
     textShadow: [
       generateTextShadow(style.titleEffect),
       generateTextGlow(style.titleEffect)
@@ -146,7 +154,7 @@ export const generateTextAreaStyle = (style?: TemplateStyle): React.CSSPropertie
     fontFamily: style.fontFamily?.text || 'Pretendard, sans-serif',
     lineHeight: style.lineHeight || '1.4',
     letterSpacing: style.letterSpacing || '-0.01em',
-    textAlign: style.textAlign?.text as any || 'center',
+    textAlign: getTypeSafeTextAlign(style.textAlign?.text, 'center'),
     textShadow: [
       generateTextShadow(style.textEffect),
       generateTextGlow(style.textEffect)

@@ -150,3 +150,11 @@ export type VideoProps = Omit<z.infer<typeof VideoPropsSchema>, 'media'> & {
 };
 
 export type TemplateStyle = z.infer<typeof TemplateStyleSchema>;
+
+// CSS 타입 안전성을 위한 정확한 textAlign 타입 정의
+export type CSSTextAlign = 'left' | 'center' | 'right';
+
+// TemplateStyle의 textAlign이 CSS textAlign과 호환되도록 하는 타입 가드
+export const isValidCSSTextAlign = (value: string | undefined): value is CSSTextAlign => {
+  return value === 'left' || value === 'center' || value === 'right';
+};
