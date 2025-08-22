@@ -1,12 +1,13 @@
 import { interpolate, useCurrentFrame } from 'remotion';
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationWithDescription } from '../types';
 
-export const slideDown: AnimationPlugin = ({ duration = 30, delay = 0 }) => {
-  const frame = useCurrentFrame();
+export const slideDown: AnimationPlugin = ({ duration, delay = 0, frame } = {}) => {
+  const currentFrame = frame !== undefined ? frame : useCurrentFrame();
+  const animationDuration = duration || (slideDown as any).defaultDuration;
   
   const opacity = interpolate(
-    frame,
-    [delay, delay + duration],
+    currentFrame,
+    [delay, delay + animationDuration],
     [1, 0],
     {
       extrapolateLeft: 'clamp',
@@ -15,8 +16,8 @@ export const slideDown: AnimationPlugin = ({ duration = 30, delay = 0 }) => {
   );
   
   const translateY = interpolate(
-    frame,
-    [delay, delay + duration],
+    currentFrame,
+    [delay, delay + animationDuration],
     [0, 30],
     {
       extrapolateLeft: 'clamp',
@@ -31,3 +32,6 @@ export const slideDown: AnimationPlugin = ({ duration = 30, delay = 0 }) => {
     },
   };
 };
+
+(slideDown as AnimationWithDescription).description = "Text slides down while fading out";
+(slideDown as any).defaultDuration = 30;

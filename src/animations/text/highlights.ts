@@ -5,7 +5,7 @@ export const highlightStyles: Record<string, CSSProperties> = {
     backgroundColor: '#ffeb3b',
     padding: '4px 8px',
     borderRadius: '4px',
-    color: '#333',
+    color: '#333333',
     fontWeight: 'bold',
   },
   'underline': {
@@ -19,45 +19,45 @@ export const highlightStyles: Record<string, CSSProperties> = {
     backgroundColor: '#f44336',
     padding: '4px 8px',
     borderRadius: '4px',
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
   'blue-box': {
     backgroundColor: '#2196f3',
     padding: '4px 8px',
     borderRadius: '4px',
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
   'green-box': {
     backgroundColor: '#4caf50',
     padding: '4px 8px',
     borderRadius: '4px',
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
   'bold': {
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333333',
   },
   'italic': {
     fontStyle: 'italic',
-    color: '#666',
+    color: '#666666',
   },
   'glow': {
     textShadow: '0 0 10px #ffeb3b, 0 0 20px #ffeb3b, 0 0 30px #ffeb3b',
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
   },
   'strike': {
     textDecoration: 'line-through',
     textDecorationColor: '#f44336',
     textDecorationThickness: '2px',
-    color: '#999',
+    color: '#999999',
   },
   'outline': {
-    textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000',
-    color: '#fff',
+    textShadow: '1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
   'none': {},
@@ -78,7 +78,7 @@ export const parseHighlightedText = (text: string, defaultHighlight: string) => 
 
   parts.forEach((part, index) => {
     const isOpenTag = part.match(/^<h(?:\s+type="([^"]*)")?>$/);
-    const isCloseTag = part === '</h3>';
+    const isCloseTag = part === '</h>';
 
     if (isOpenTag) {
       isHighlighting = true;

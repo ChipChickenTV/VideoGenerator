@@ -206,7 +206,7 @@ async function main() {
       
       const frame = args.frame || 0;
       console.log(`📸 스틸 이미지 렌더링 시작 (프레임: ${frame})...`);
-      result = await renderStill(props, frame, options);
+      result = await renderStill(props, { ...options, frame });
     }
     
     // 결과 출력

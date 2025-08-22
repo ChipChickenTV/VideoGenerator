@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.remotion.dev)",
+      "Bash(npm run:*)",
+      "Bash(find:*)",
+      "Bash(timeout 5 npm run showcase)",
+      "Bash(rm:*)",
+      "Bash(timeout 3 npm run showcase)",
+      "Bash(ls:*)",
+      "Bash(mv:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx remotion:*)",
+      "Bash(node:*)",
+      "Bash(mkdir:*)",
+      "Bash(timeout 10 npm run showcase)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:localhost)",
+      "WebFetch(domain:127.0.0.1)",
+      "Bash(TASKKILL /F /IM node.exe)",
+      "Bash(cp:*)",
+      "Bash(powershell:*)"
+    ],
+    "deny": []
+  }
+}

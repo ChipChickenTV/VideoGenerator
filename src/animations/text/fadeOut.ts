@@ -1,23 +1,14 @@
 import { interpolate, useCurrentFrame } from 'remotion';
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationWithDescription } from '../types';
 
-export const fadeOut: AnimationPlugin = ({ duration = 30, delay = 0 }) => {
-  const frame = useCurrentFrame();
+export const fadeOut: AnimationPlugin = ({ duration, delay = 0, frame } = {}) => {
+  const currentFrame = frame !== undefined ? frame : useCurrentFrame();
+  const animationDuration = duration || (fadeOut as any).defaultDuration;
   
   const opacity = interpolate(
-    frame,
-    [delay, delay + duration],
+    currentFrame,
+    [delay, delay + animationDuration],
     [1, 0],
-    {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    }
-  );
-  
-  const translateY = interpolate(
-    frame,
-    [delay, delay + duration],
-    [0, -10],
     {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
@@ -27,7 +18,9 @@ export const fadeOut: AnimationPlugin = ({ duration = 30, delay = 0 }) => {
   return {
     style: {
       opacity,
-      transform: `translateY(${translateY}px)`,
     },
   };
-}; 
+};
+
+(fadeOut as AnimationWithDescription).description = "Text fades out gradually";
+(fadeOut as any).defaultDuration = 30; 

@@ -16,7 +16,7 @@
       "type": "streamable-http",
       "url": "https://mcp.context7.com/mcp",
       "alwaysAllow": [
-        "resolve-library-id"
+        "get-library-docs"
       ]
     }
   }

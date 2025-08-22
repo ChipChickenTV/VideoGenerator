@@ -1,12 +1,13 @@
 import { interpolate, useCurrentFrame } from 'remotion';
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationWithDescription } from '../types';
 
-export const panRight: AnimationPlugin = ({ duration = 90 }) => {
+export const panRight: AnimationPlugin = ({ duration } = {}) => {
   const frame = useCurrentFrame();
+  const animationDuration = duration || (panRight as any).defaultDuration;
   
   const translateX = interpolate(
     frame,
-    [0, duration],
+    [0, animationDuration],
     [0, -20],
     {
       extrapolateLeft: 'clamp',
@@ -20,4 +21,7 @@ export const panRight: AnimationPlugin = ({ duration = 90 }) => {
       transformOrigin: 'center center',
     },
   };
-}; 
+};
+
+(panRight as AnimationWithDescription).description = "Image pans to the right";
+(panRight as any).defaultDuration = 90; 

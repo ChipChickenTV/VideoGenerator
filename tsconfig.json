@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@/remotion/*": ["src/remotion/*"],
@@ -19,5 +20,5 @@
       "@/config/*": ["src/config/*"]
     }
   },
-  "exclude": ["remotion.config.ts"]
+  "exclude": ["remotion.config.ts", "legacy"]
 }

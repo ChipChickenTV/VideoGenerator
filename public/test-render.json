@@ -1,6 +1,11 @@
 {
-  "theme": {
-    "fontFamily": "'Pretendard', sans-serif",
+  "templateStyle": {
+    "fontFamily": {
+      "header": "Pretendard, sans-serif",
+      "title": "Pretendard, sans-serif", 
+      "text": "Pretendard, sans-serif",
+      "meta": "Pretendard, sans-serif"
+    },
     "textColor": "#000000",
     "backgroundColor": "#FFFFFF",
     "layout": "text-middle"
@@ -25,7 +30,8 @@
       },
       "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/0.wav",
       "transition": {
-        "effect": "slide-left"
+        "effect": "slide-left",
+        "duration": 30
       }
     },
     {
@@ -41,12 +47,13 @@
         "animation": {
           "in": "word-by-word-fade",
           "out": "none",
-          "highlight": "yellow-box"
+          "highlight": "none"
         }
       },
       "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/1.wav",
       "transition": {
-        "effect": "wipe-up"
+        "effect": "wipe-up",
+        "duration": 45
       }
     },
     {
@@ -62,13 +69,10 @@
         "animation": {
           "in": "fadeIn",
           "out": "none",
-          "highlight": "yellow-box"
+          "highlight": "none"
         }
       },
-      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/2.wav",
-      "transition": {
-        "effect": "none"
-      }
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/2.wav"
     },
     {
       "image": {
@@ -83,13 +87,10 @@
         "animation": {
           "in": "slideUp",
           "out": "none",
-          "highlight": "yellow-box"
+          "highlight": "none"
         }
       },
-      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/3.wav",
-      "transition": {
-        "effect": "none"
-      }
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/3.wav"
     },
     {
       "image": {
@@ -102,15 +103,12 @@
       "script": {
         "url": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.txt",
         "animation": {
-          "in": "fadeIn",
+          "in": "none",
           "out": "none",
-          "highlight": "yellow-box"
+          "highlight": "none"
         }
       },
-      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.wav",
-      "transition": {
-        "effect": "none"
-      }
+      "voice": "http://180.228.166.151:54321/storage/v1/object/ssul/thziiv32gs/4.wav"
     }
   ]
 }

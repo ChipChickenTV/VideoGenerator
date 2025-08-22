@@ -1,28 +1,41 @@
 import React from 'react';
-import { VideoProps } from '@/types/VideoProps';
+import { VideoProps, TemplateStyle } from '@/types/VideoProps';
 import { THEME_CONSTANTS } from '@/config/theme';
+import { generatePostHeaderStyle, generateTitleStyle, generateMetaStyle } from '../utils/styleUtils';
 
 interface PostHeaderProps {
   title?: string;
   postMeta?: VideoProps['postMeta'];
+  templateStyle?: TemplateStyle;
 }
 
-export const PostHeader: React.FC<PostHeaderProps> = ({ title, postMeta }) => {
+export const PostHeader: React.FC<PostHeaderProps> = ({ 
+  title, 
+  postMeta, 
+  templateStyle 
+}) => {
+  const postHeaderStyle = generatePostHeaderStyle(templateStyle);
+  const titleStyle = generateTitleStyle(templateStyle);
+  const metaStyle = generateMetaStyle(templateStyle);
+
   return (
     <div style={{
-      paddingBottom: 40,
-      borderBottom: `4px solid ${THEME_CONSTANTS.COLORS.BORDER}`,
-      marginBottom: 60,
+      ...postHeaderStyle,
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      padding: '36px 0', // 12px * 3
     }}>
       {/* 제목 */}
       {title && (
         <div style={{
-          fontSize: THEME_CONSTANTS.TYPOGRAPHY.POST_TITLE_SIZE,
-          fontWeight: 700,
+          ...titleStyle,
+          fontSize: titleStyle.fontSize || THEME_CONSTANTS.TYPOGRAPHY.POST_TITLE_SIZE,
+          fontWeight: titleStyle.fontWeight || 700,
           marginBottom: 20,
           lineHeight: 1.3,
-          fontFamily: THEME_CONSTANTS.FONTS.PRIMARY,
-          color: THEME_CONSTANTS.COLORS.TEXT_PRIMARY,
+          fontFamily: titleStyle.fontFamily || THEME_CONSTANTS.FONTS.PRIMARY,
         }}>
           {title}
         </div>
@@ -31,12 +44,13 @@ export const PostHeader: React.FC<PostHeaderProps> = ({ title, postMeta }) => {
       {/* 메타 정보 */}
       {postMeta && (
         <div style={{
-          fontSize: THEME_CONSTANTS.TYPOGRAPHY.META_TEXT_SIZE,
-          color: THEME_CONSTANTS.COLORS.TEXT_META,
+          ...metaStyle,
+          fontSize: metaStyle.fontSize || THEME_CONSTANTS.TYPOGRAPHY.META_TEXT_SIZE,
           display: 'flex',
           alignItems: 'center',
           gap: 20,
           fontFamily: THEME_CONSTANTS.FONTS.PRIMARY,
+          fontStyle: templateStyle?.fontStyle?.text === 'italic' ? 'italic' : 'normal',
         }}>
           <span>{postMeta.author || '익명'}</span>
           <span>|</span>

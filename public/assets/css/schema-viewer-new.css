@@ -1,0 +1,610 @@
+/* VideoWeb3 Schema Viewer - 새로운 단순한 버전 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #667eea;
+    --bg: #f5f7fa;
+    --white: #ffffff;
+    --text: #333333;
+    --text-muted: #666666;
+    --border: #e2e8f0;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--primary), #764ba2);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.header__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header__subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Navigation */
+.nav-tabs {
+    display: flex;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.nav-tab {
+    flex: 1;
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.nav-tab:hover {
+    background-color: #f8fafc;
+}
+
+.nav-tab.active {
+    background: linear-gradient(135deg, var(--primary), #764ba2);
+    color: var(--white);
+}
+
+/* Main Content */
+.main-content {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    min-height: 60vh;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Loading */
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.loading__spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.section-header__icon {
+    font-size: 2rem;
+}
+
+.section-header__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* JSON Viewer */
+.json-viewer {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    overflow-x: auto;
+}
+
+.json-line {
+    min-height: 1.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.json-content {
+    /* 컨텐츠 영역 */
+}
+
+.json-field {
+    /* 개별 필드 */
+}
+
+.json-indent {
+    color: #404040;
+    white-space: pre;
+    user-select: none;
+}
+
+.json-toggle {
+    width: 1rem;
+    color: #808080;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 0.3rem;
+    transition: color 0.2s;
+    display: inline-block;
+    text-align: center;
+}
+
+.json-toggle:hover {
+    color: #d4d4d4;
+}
+
+.json-toggle-space {
+    width: 1rem;
+    display: inline-block;
+    margin-right: 0.3rem;
+}
+
+.json-brace {
+    color: #569cd6;
+    font-weight: bold;
+}
+
+.json-key {
+    color: #9cdcfe;
+    font-weight: 500;
+}
+
+.json-colon {
+    color: #d4d4d4;
+}
+
+.json-string {
+    color: #ce9178;
+}
+
+.json-number {
+    color: #b5cea8;
+}
+
+.json-boolean {
+    color: #569cd6;
+}
+
+.json-object {
+    color: #569cd6;
+}
+
+.json-array {
+    color: #ffd700;
+}
+
+.json-value {
+    color: #ce9178;
+}
+
+.json-type {
+    color: #4ec9b0;
+    font-style: italic;
+    opacity: 0.8;
+    margin-left: 0.5rem;
+}
+
+.json-required {
+    color: #f14c4c;
+    font-weight: bold;
+    margin-left: 0.3rem;
+}
+
+.json-comment {
+    color: #6a9955;
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+.json-comma {
+    color: #d4d4d4;
+}
+
+.json-expandable {
+    /* 확장 가능한 영역 */
+}
+
+.json-loading {
+    color: #808080;
+    font-style: italic;
+    padding: 0.5rem 0;
+    margin-left: 2rem;
+}
+
+.json-error {
+    color: #f14c4c;
+    font-style: italic;
+    padding: 0.5rem 0;
+    margin-left: 2rem;
+}
+
+/* Animation Grid */
+.animation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.animation-group {
+    background: #f8fafc;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.animation-group h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.animation-item {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.animation-item:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.anim-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+}
+
+.anim-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.error {
+    background: #fee;
+    border: 2px solid #fcc;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #c33;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .header__title {
+        font-size: 2rem;
+    }
+    
+    .nav-tabs {
+        flex-direction: column;
+    }
+    
+    .animation-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .json-viewer {
+        font-size: 0.85rem;
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   Animation Library 특별 스타일
+   ======================================== */
+
+/* Animation Library 컨테이너 - 네온 효과 */
+.json-animation-container {
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease infinite;
+    border-radius: 6px;
+    padding: 4px 8px;
+    display: inline-block;
+    position: relative;
+    box-shadow: 
+        0 0 10px rgba(102, 126, 234, 0.3),
+        0 0 20px rgba(118, 75, 162, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Animation Library enum 옵션들 */
+.json-animation-enum {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    text-shadow: 
+        0 0 5px rgba(255, 255, 255, 0.8),
+        0 0 10px rgba(102, 126, 234, 0.6);
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    cursor: help;
+}
+
+.json-animation-enum:hover {
+    background: rgba(255, 255, 255, 0.2);
+    text-shadow: 
+        0 0 8px rgba(255, 255, 255, 1),
+        0 0 15px rgba(102, 126, 234, 0.8);
+    transform: scale(1.05);
+}
+
+/* Animation Library 기본값 강조 */
+.json-animation-enum.default {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+    text-shadow: 
+        0 0 8px rgba(255, 255, 255, 1),
+        0 0 15px rgba(240, 147, 251, 0.8);
+}
+
+/* Animation Library 구분자 */
+.json-enum-separator.animation {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+    margin: 0 4px;
+}
+
+/* Animation Library "more" 텍스트 */
+.json-animation-more {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-style: italic;
+    font-weight: 500;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+/* Animation Library 컨테이너 호버 시 전체 글로우 강화 */
+.json-animation-container:hover {
+    box-shadow: 
+        0 0 15px rgba(102, 126, 234, 0.5),
+        0 0 30px rgba(118, 75, 162, 0.3),
+        0 0 45px rgba(240, 147, 251, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: gradient-shift 2s ease infinite;
+}
+
+/* ========================================
+   일반 enum 스타일 (대비용)
+   ======================================== */
+
+/* 일반 enum 옵션 - 평범한 스타일 */
+.json-enum-option {
+    color: #569cd6;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(86, 156, 214, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.json-enum-option:hover {
+    background: rgba(86, 156, 214, 0.2);
+}
+
+.json-enum-option.default {
+    background: rgba(86, 156, 214, 0.2);
+    font-weight: 600;
+    border: 1px solid rgba(86, 156, 214, 0.3);
+}
+
+.json-enum-separator {
+    color: #d4d4d4;
+    margin: 0 2px;
+}
+
+.json-enum-more {
+    color: #808080;
+    font-style: italic;
+    background: rgba(128, 128, 128, 0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px dashed rgba(128, 128, 128, 0.3);
+}
+
+/* Animation Library 필드들에 특별한 툴팁 효과 */
+.json-animation-container::before {
+    content: '🎭 Animation Library';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.json-animation-container:hover::before {
+    opacity: 1;
+}
+
+/* ========================================
+   Animation Library Parameters
+   ======================================== */
+
+/* 애니메이션 파라미터 섹션 */
+.anim-params {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #e5e7eb;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+}
+
+/* Parameters 라벨 */
+.params-label {
+    color: #6a9955;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+}
+
+/* 파라미터 리스트 컨테이너 */
+.params-list {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 0.5rem;
+    color: #495057;
+    line-height: 1.4;
+}
+
+/* 개별 파라미터 아이템 */
+.param-item {
+    display: inline;
+}
+
+/* 파라미터 이름 */
+.param-name {
+    color: #0969da;
+    font-weight: 600;
+}
+
+/* 파라미터 콜론 */
+.param-colon {
+    color: #24292f;
+    margin-right: 0.2rem;
+}
+
+/* 파라미터 타입 */
+.param-type {
+    color: #8250df;
+    font-style: italic;
+}
+
+/* 파라미터 기본값 */
+.param-default {
+    color: #0a3069;
+    font-weight: 500;
+}
+
+/* 파라미터 필수 표시 */
+.param-required {
+    color: #d1242f;
+    font-weight: bold;
+}
+
+/* 파라미터가 없는 경우 */
+.no-params {
+    color: #6e7681;
+    font-style: italic;
+    font-size: 0.8rem;
+    background: #f6f8fa;
+    padding: 0.3rem 0.6rem;
+    border-radius: 3px;
+    border: 1px dashed #d1d9e0;
+    display: inline-block;
+}
+
+/* 호버 효과 */
+.animation-item:hover .params-list {
+    background: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.animation-item:hover .param-name {
+    color: #0550ae;
+}
+
+.animation-item:hover .param-type {
+    color: #6f42c1;
+}

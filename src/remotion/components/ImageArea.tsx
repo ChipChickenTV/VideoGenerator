@@ -14,11 +14,10 @@ export const ImageArea: React.FC<ImageAreaProps> = ({ image }) => {
   
   const animationEffect = image.animation.effect;
   const filterEffect = image.animation.filter;
-  const duration = 90; // 기본 애니메이션 길이
   
   // 애니메이션 스타일 가져오기
   const animation = getImageAnimation(animationEffect);
-  const animationResult = animation({ duration });
+  const animationResult = animation();
   
   // 필터 스타일 가져오기
   const filterStyle = getImageFilter(filterEffect);
@@ -30,10 +29,9 @@ export const ImageArea: React.FC<ImageAreaProps> = ({ image }) => {
   return (
     <div style={{
       width: '100%',
-      aspectRatio: '1',
+      height: '100%',
       borderRadius: THEME_CONSTANTS.DIMENSIONS.IMAGE_BORDER_RADIUS,
       overflow: 'hidden',
-      margin: '0 auto',
       position: 'relative',
     }}>
       <div style={{

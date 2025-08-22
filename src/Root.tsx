@@ -2,19 +2,8 @@ import "./index.css";
 import { Composition } from "remotion";
 import { MyComposition } from "./Composition";
 import { VideoPropsSchema, VideoProps } from "./types/VideoProps";
-import { AnimationShowcase, animationShowcasePropsSchema } from "./remotion/AnimationShowcase";
-import { getAllAnimations } from "./animations";
-import { getAnimationDuration } from "./animations/duration";
-
-// Helper to capitalize the first letter for the enum
-function capitalize<T extends string>(string: T): Capitalize<T> {
-  return (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
-}
 
 export const Root: React.FC = () => {
-  // 모든 애니메이션 정보 수집
-  const allAnimations = getAllAnimations();
-
   // FPS 설정
   const fps = 30;
 
@@ -32,7 +21,9 @@ export const Root: React.FC = () => {
             return { durationInFrames: fps * 10 };
           }
           const totalDurationInFrames = videoProps.media.reduce((total, scene) => {
-            const sceneDurationInFrames = Math.ceil((scene.audioDuration || 3) * fps);
+            // Priority: audio duration > default (all in seconds)
+            const durationInSeconds = scene.audioDuration || 3;
+            const sceneDurationInFrames = Math.ceil(durationInSeconds * fps);
             return total + sceneDurationInFrames;
           }, 0);
           return {
@@ -41,12 +32,25 @@ export const Root: React.FC = () => {
         }}
         schema={VideoPropsSchema}
         defaultProps={{
-          theme: {
-            fontFamily: "'Pretendard', sans-serif",
+          templateStyle: {
+            fontFamily: {
+              header: "Pretendard, sans-serif",
+              title: "Pretendard, sans-serif",
+              text: "Pretendard, sans-serif",
+              meta: "Pretendard, sans-serif",
+            },
             textColor: "#1a1a1a",
             backgroundColor: "#ffffff",
             headerColor: "#a5d8f3",
             layout: "text-middle",
+            textAlign: {
+              header: "center",
+              title: "left",
+              text: "center",
+              meta: "left",
+            },
+            lineHeight: "1.4",
+            letterSpacing: "normal",
           },
           title: "샘플 비디오",
           postMeta: {
@@ -76,25 +80,6 @@ export const Root: React.FC = () => {
           ],
         } as VideoProps}
       />
-
-      {/* 애니메이션 쇼케이스 컴포지션들 */}
-      {allAnimations.map((animation) => (
-        <Composition
-          key={`Showcase-${animation.type}-${animation.name}`}
-          id={`Showcase-${animation.type}-${animation.name}`}
-          component={AnimationShowcase}
-          durationInFrames={getAnimationDuration(animation.type, animation.name)}
-          fps={fps}
-          width={1080}
-          height={1920}
-          schema={animationShowcasePropsSchema}
-          defaultProps={{
-            animationType: capitalize(animation.type),
-            animationName: animation.name,
-            demoContent: animation.demoContent,
-          }}
-        />
-      ))}
     </>
   );
 };

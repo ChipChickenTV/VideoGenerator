@@ -4,9 +4,10 @@ import { THEME_CONSTANTS } from '@/config/theme';
 
 interface PhoneFrameProps {
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
-export const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
+export const PhoneFrame: React.FC<PhoneFrameProps> = ({ children, style }) => {
   return (
     <AbsoluteFill
       style={{
@@ -17,12 +18,13 @@ export const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
         style={{
           width: '100%',
           height: '100%',
-          backgroundColor: THEME_CONSTANTS.COLORS.PHONE_BACKGROUND,
+          backgroundColor: (typeof style?.background === 'string' ? style.background : THEME_CONSTANTS.COLORS.PHONE_BACKGROUND),
           borderRadius: THEME_CONSTANTS.DIMENSIONS.PHONE_BORDER_RADIUS,
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
+          ...style, // 전달받은 스타일 적용
         }}
       >
         {children}

@@ -4,9 +4,12 @@ import fetch from 'node-fetch';
 import { promises as fs } from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { VideoProps } from './src/types/VideoProps';
+import { VideoProps, VideoPropsSchema } from './src/types/VideoProps';
 import { renderVideo } from './src/renderer';
 import { uploadToSupabase } from './src/lib/supabase';
+import { getAllAnimations } from './src/animations';
+import { parameterExtractor } from './src/utils/dynamicParameterExtractor';
+import { analyze1DepthSchema, analyzeFieldSchema } from './src/utils/schemaAnalyzer';
 
 // .env 파일 로드
 dotenv.config();
@@ -21,6 +24,124 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // 정적 파일 서빙 (렌더링 결과 다운로드용)
 app.use('/output', express.static('out'));
+
+// 정적 파일 서빙 (웹 UI용)
+app.use(express.static('public'));
+
+// Health check 엔드포인트
+app.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    env: process.env.NODE_ENV || 'development'
+  });
+});
+
+// JSON 스키마 1depth 구조 엔드포인트 (동적 분석)
+app.get('/api/schema', (req, res) => {
+  try {
+    const analysis = analyze1DepthSchema(VideoPropsSchema);
+    
+    res.json({
+      success: true,
+      ...analysis
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to analyze schema',
+      message: error.message
+    });
+  }
+});
+
+// 특정 필드 상세 스키마 엔드포인트 (동적 분석)
+app.get('/api/schema/:field', (req, res) => {
+  try {
+    const { field } = req.params;
+    const analysis = analyzeFieldSchema(VideoPropsSchema, field);
+    
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        error: 'Field not found or not analyzable',
+        message: `Field '${field}' does not exist or is not an object type`
+      });
+    }
+    
+    res.json({
+      success: true,
+      field: field,
+      ...analysis
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to analyze field schema',
+      message: error.message
+    });
+  }
+});
+
+// 애니메이션 리스트 엔드포인트 (완전 동적)
+app.get('/api/animations', (req, res) => {
+  try {
+    const animations = getAllAnimations();
+    res.json({
+      success: true,
+      animations: animations,
+      count: animations.length
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get animations',
+      message: error.message
+    });
+  }
+});
+
+// 특정 애니메이션 파라미터 가이드 엔드포인트 (동적 추출)
+app.get('/api/animations/:type/:name', async (req, res) => {
+  try {
+    const { type, name } = req.params;
+    const animationKey = `${type}/${name}`;
+    
+    // 동적으로 모든 애니메이션 정보 추출 (파라미터 + 설명)
+    const allAnimationInfo = await parameterExtractor.extractAllAnimationInfo();
+    
+    // 해당 애니메이션 정보 확인
+    if (!allAnimationInfo[animationKey]) {
+      return res.status(404).json({
+        success: false,
+        error: 'Animation not found',
+        message: `Animation ${type}/${name} does not exist`
+      });
+    }
+
+    const animationInfo = allAnimationInfo[animationKey];
+    
+    res.json({
+      success: true,
+      ...(animationInfo.description && { description: animationInfo.description }),
+      fields: animationInfo.params
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get animation parameters',
+      message: error.message
+    });
+  }
+});
+
+
+
+
 
 // 비디오 렌더링 엔드포인트 (inputUrl 방식)
 app.post('/render', async (req, res) => {
@@ -143,6 +264,11 @@ app.listen(PORT, () => {
   console.log(`🌐 포트: ${PORT}`);
   console.log(`📍 URL: http://localhost:${PORT}`);
   console.log('🔗 엔드포인트:');
+  console.log('  GET /health - 서버 상태 확인');
+  console.log('  GET /api/schema - JSON 스키마 1depth 구조');
+  console.log('  GET /api/schema/:field - 특정 필드 상세 스키마');
+  console.log('  GET /api/animations - 사용 가능한 애니메이션 목록');
+  console.log('  GET /api/animations/:type/:name - 특정 애니메이션 사용법');
   console.log('  POST /render - inputUrl로 비디오 렌더링');
   console.log('  GET /output/* - 렌더링 결과 다운로드');
   console.log('');

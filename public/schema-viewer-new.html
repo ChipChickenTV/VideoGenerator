@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoWeb3 API Schema Viewer</title>
+    <meta name="description" content="VideoWeb3 JSON 스키마와 애니메이션 파라미터를 시각적으로 확인하는 도구">
+    <link rel="stylesheet" href="assets/css/schema-viewer-new.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header__title">🎬 VideoWeb3 API Schema</h1>
+            <p class="header__subtitle">JSON 스키마와 애니메이션 파라미터를 깔끔하게 확인하세요</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="schema">
+                <span>📋</span>
+                <span>Schema Structure</span>
+            </button>
+            <button class="nav-tab" data-tab="animations">
+                <span>🎭</span>
+                <span>Animations Library</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Schema Tab -->
+            <div id="schema-content" class="tab-content active">
+                <div id="schema-loading" class="loading">
+                    <div class="loading__spinner"></div>
+                    <p class="loading__text">스키마 데이터를 불러오는 중...</p>
+                </div>
+            </div>
+
+            <!-- Animations Tab -->
+            <div id="animations-content" class="tab-content">
+                <div id="animations-loading" class="loading">
+                    <div class="loading__spinner"></div>
+                    <p class="loading__text">애니메이션 데이터를 불러오는 중...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="schema-api.js"></script>
+    <script src="assets/js/schema-viewer-new.js"></script>
+</body>
+</html>

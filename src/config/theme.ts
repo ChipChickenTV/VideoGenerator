@@ -8,28 +8,32 @@ export const THEME_CONSTANTS = {
     PHONE_BACKGROUND: '#ffffff',
     HEADER_BACKGROUND: '#a5d8f3',
     TEXT_PRIMARY: '#1a1a1a',
-    TEXT_SECONDARY: '#333',
-    TEXT_META: '#888',
+    TEXT_SECONDARY: '#333333',
+    TEXT_META: '#888888',
     PROFILE_BACKGROUND: '#3498db',
     BORDER: '#e0e0e0',
     IMAGE_PLACEHOLDER: '#e0e0e0',
   },
   DIMENSIONS: {
-    // 1080x1920 풀스크린 기준
+    // template-examples.html 기준 3배 적용 (360x640 → 1080x1920)
     PHONE_WIDTH: 1080,
     PHONE_HEIGHT: 1920,
-    PHONE_BORDER_RADIUS: 48, // 1080p에 맞게 둥근 모서리 복원
-    HEADER_PADDING: 40,
-    CONTENT_PADDING: 60,
-    IMAGE_BORDER_RADIUS: 24,
-    PROFILE_SIZE: 80,
+    PHONE_BORDER_RADIUS: 72, // 24px * 3
+    HEADER_PADDING: 54, // 18px * 3
+    CONTENT_PADDING: 60, // 20px * 3
+    CONTENT_VERTICAL_PADDING: 45, // 15px * 3
+    IMAGE_BORDER_RADIUS: 36, // 12px * 3
+    PROFILE_SIZE: 96, // 32px * 3
+    POST_HEADER_HEIGHT: 240, // 80px * 3
+    TEXT_AREA_HEIGHT: 300, // 100px * 3
+    IMAGE_SIZE: 960, // 320px * 3
   },
   TYPOGRAPHY: {
-    // 1080p 해상도에 맞게 폰트 크기 확대
-    HEADER_TITLE_SIZE: 48,
-    POST_TITLE_SIZE: 42,
-    SCRIPT_TEXT_SIZE: 38,
-    META_TEXT_SIZE: 28,
+    // template-examples.html 기준 3배 적용
+    HEADER_TITLE_SIZE: 54, // 18px * 3
+    POST_TITLE_SIZE: 48, // 16px * 3
+    SCRIPT_TEXT_SIZE: 48, // 16px * 3
+    META_TEXT_SIZE: 36, // 12px * 3
     LINE_HEIGHT: 1.4,
     LETTER_SPACING: '-0.01em',
   },

@@ -1,16 +1,37 @@
 import React from 'react';
 import { THEME_CONSTANTS } from '@/config/theme';
+import { TemplateStyle } from '@/types/VideoProps';
+import { generateHeaderStyle, generateDecorationText } from '../utils/styleUtils';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  templateStyle?: TemplateStyle;
+}
+
+export const Header: React.FC<HeaderProps> = ({ templateStyle }) => {
+  const headerStyle = generateHeaderStyle(templateStyle);
+  const decorationBefore = generateDecorationText(templateStyle, 'before');
+  const decorationAfter = generateDecorationText(templateStyle, 'after');
+
   return (
     <div style={{
-      backgroundColor: THEME_CONSTANTS.COLORS.HEADER_BACKGROUND,
+      ...headerStyle,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: `${THEME_CONSTANTS.DIMENSIONS.HEADER_PADDING}px 60px`,
-      color: THEME_CONSTANTS.COLORS.TEXT_SECONDARY,
+      position: 'relative',
     }}>
+      {/* 데코레이션 - 앞 */}
+      {decorationBefore && (
+        <div style={{
+          position: 'absolute',
+          left: '10px',
+          fontSize: '16px',
+        }}>
+          {decorationBefore}
+        </div>
+      )}
+      
       {/* 뒤로가기 버튼 */}
       <div style={{
         fontSize: 54,
@@ -21,12 +42,27 @@ export const Header: React.FC = () => {
       
       {/* 헤더 제목 */}
       <div style={{
-        fontSize: THEME_CONSTANTS.TYPOGRAPHY.HEADER_TITLE_SIZE,
-        fontWeight: 700,
-        fontFamily: THEME_CONSTANTS.FONTS.PRIMARY,
+        color: headerStyle.color,
+        fontSize: headerStyle.fontSize,
+        fontWeight: headerStyle.fontWeight,
+        fontFamily: headerStyle.fontFamily,
+        fontStyle: headerStyle.fontStyle,
+        textShadow: headerStyle.textShadow,
+        animation: headerStyle.animation,
       }}>
         썰풀기
       </div>
+      
+      {/* 데코레이션 - 뒤 */}
+      {decorationAfter && (
+        <div style={{
+          position: 'absolute',
+          right: '50px',
+          fontSize: '16px',
+        }}>
+          {decorationAfter}
+        </div>
+      )}
       
       {/* 프로필 */}
       <div style={{

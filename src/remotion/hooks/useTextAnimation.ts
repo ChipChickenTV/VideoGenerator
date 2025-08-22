@@ -1,22 +1,23 @@
 import { useCurrentFrame, interpolate } from 'remotion';
 import { VideoProps } from '@/types/VideoProps';
 import React from 'react';
+import { getTextAnimation, getCurrentTextChunk } from '@/animations/text';
 
 // 이 파일 내부에서만 사용될 헬퍼 함수들 (export하지 않음)
-const splitTextIntoChunks = (text: string, chunkSize: number = 4) => {
-  const elements = text.trim().match(/<[^>]+>|\S+/g) || [];
-  const chunks = [];
-  for (let i = 0; i < elements.length; i += chunkSize) {
-    chunks.push(elements.slice(i, i + chunkSize).join(' '));
-  }
+const splitTextIntoChunks = (text: string) => {
+  // [SEPT] 구분자로 텍스트 분할
+  const chunks = text.split('[SEPT]').map(chunk => chunk.trim()).filter(chunk => chunk.length > 0);
+  
+  // [SEPT] 구분자가 없는 경우 전체 텍스트를 하나의 청크로 처리
   if (chunks.length === 0 && text.trim().length > 0) {
     return [text.trim()];
   }
+  
   return chunks;
 };
 
 const getCurrentChunkInfo = (text: string, frame: number, duration: number) => {
-  const chunks = splitTextIntoChunks(text, 4);
+  const chunks = splitTextIntoChunks(text);
   const totalChunks = chunks.length;
   if (totalChunks === 0) {
     return { text: '', frameInChunk: 0, chunkDuration: 0 };
@@ -38,24 +39,24 @@ const getCurrentChunkInfo = (text: string, frame: number, duration: number) => {
 
 const getInAnimationStyle = (animationType: string, frameInChunk: number, chunkDuration: number) => {
   const animationDuration = Math.min(chunkDuration * 0.3, 20);
-  switch (animationType) {
-    case 'none':
-      return { opacity: 1 };
-    case 'fadeIn':
-      return { opacity: interpolate(frameInChunk, [0, animationDuration], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) };
-    case 'slideUp':
+  
+  // Use actual animation functions from animations/text
+  try {
+    const animationFunction = getTextAnimation(animationType);
+    const result = animationFunction({ duration: animationDuration, delay: 0, frame: frameInChunk });
+    
+    // Special handling for typing effect
+    if (animationType === 'typing') {
       return {
-        opacity: interpolate(frameInChunk, [0, animationDuration], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
-        transform: `translateY(${interpolate(frameInChunk, [0, animationDuration], [30, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
-      };
-    case 'word-by-word-fade': // Fallback for now
-    case 'typing':
-      return {
-        opacity: 1,
+        ...result.style,
         typingProgress: interpolate(frameInChunk, [0, chunkDuration * 0.8], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
       };
-    default:
-      return { opacity: 1 };
+    }
+    
+    return result.style;
+  } catch (error) {
+    // Fallback to default if animation not found
+    return { opacity: 1 };
   }
 };
 
@@ -63,18 +64,19 @@ const getOutAnimationStyle = (animationType: string, frameInChunk: number, chunk
   const animationDuration = Math.min(chunkDuration * 0.3, 20);
   const startFrame = chunkDuration - animationDuration;
 
-  switch (animationType) {
-    case 'none':
-      return {};
-    case 'fadeOut':
-      return { opacity: interpolate(frameInChunk, [startFrame, chunkDuration], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) };
-    case 'slideDown':
-      return {
-        opacity: interpolate(frameInChunk, [startFrame, chunkDuration], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
-        transform: `translateY(${interpolate(frameInChunk, [startFrame, chunkDuration], [0, 30], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
-      };
-    default:
-      return {};
+  if (animationType === 'none') {
+    return {};
+  }
+  
+  // Use actual animation functions from animations/text
+  try {
+    const animationFunction = getTextAnimation(animationType);
+    const result = animationFunction({ duration: animationDuration, delay: startFrame, frame: frameInChunk });
+    
+    return result.style;
+  } catch (error) {
+    // Fallback to default if animation not found
+    return {};
   }
 };
 
@@ -110,6 +112,15 @@ export const useTextAnimation = ({ script, audioDurationInFrames }: UseTextAnima
   const outAnimation = script.animation.out;
   const duration = audioDurationInFrames || 60;
 
+  // Special handling for word-by-word-fade
+  if (inAnimation === 'word-by-word-fade') {
+    const chunkResult = getCurrentTextChunk(script.text || '', frame, duration);
+    return { 
+      displayText: chunkResult.text, 
+      animationStyle: { opacity: chunkResult.opacity } 
+    };
+  }
+
   const chunkInfo = getCurrentChunkInfo(script.text || '', frame, duration);
   const { frameInChunk, chunkDuration } = chunkInfo;
 
@@ -122,19 +133,17 @@ export const useTextAnimation = ({ script, audioDurationInFrames }: UseTextAnima
     displayText = getTypingText(chunkInfo.text, inStyle.typingProgress as number);
   }
 
-  // inStyle과 outStyle을 병합합니다.
-  const combinedStyle: React.CSSProperties = { ...inStyle, ...outStyle };
-
-  // transform 속성이 충돌하는 경우 (e.g., slideUp -> slideDown)
-  // 퇴장 애니메이션의 transform이 등장 애니메이션의 transform을 덮어쓰도록 합니다.
-  if (inStyle.transform && outStyle.transform) {
-    const outAnimationStartFrame = chunkDuration - Math.min(chunkDuration * 0.3, 20);
-    // 퇴장 애니메이션이 시작된 후에는 퇴장 스타일만 적용
-    if (frameInChunk >= outAnimationStartFrame) {
-      combinedStyle.transform = outStyle.transform;
-    } else {
-      combinedStyle.transform = inStyle.transform;
-    }
+  // Animation timing: in (30%), static (40%), out (30%)
+  const outAnimationStartFrame = chunkDuration - Math.min(chunkDuration * 0.3, 20);
+  
+  let combinedStyle: React.CSSProperties;
+  
+  if (frameInChunk >= outAnimationStartFrame) {
+    // Out animation phase - use only out animation style
+    combinedStyle = { ...outStyle };
+  } else {
+    // In animation phase - use only in animation style
+    combinedStyle = { ...inStyle };
   }
   
   return { displayText, animationStyle: combinedStyle };

@@ -1,8 +1,8 @@
 import { interpolate } from 'remotion';
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationWithDescription } from '../types';
 import { ANIMATION_CONSTANTS } from '../../config/theme';
 
-export const typing: AnimationPlugin = ({ duration = 90, text = '' }) => {
+export const typing: AnimationPlugin = ({ duration, text = '' } = {}) => {
   return {
     style: {
       overflow: 'hidden',
@@ -12,9 +12,10 @@ export const typing: AnimationPlugin = ({ duration = 90, text = '' }) => {
   };
 };
 
-export const getVisibleText = (text: string, frame: number, duration: number = 90): string => {
+export const getVisibleText = (text: string, frame: number, duration?: number): string => {
   const totalChars = text.length;
-  const typingDuration = Math.min(duration, totalChars * ANIMATION_CONSTANTS.DURATIONS.TYPING_SPEED);
+  const animationDuration = duration || (typing as any).defaultDuration || 90;
+  const typingDuration = Math.min(animationDuration, totalChars * ANIMATION_CONSTANTS.DURATIONS.TYPING_SPEED);
   
   const visibleChars = Math.floor(interpolate(
     frame,
@@ -27,4 +28,7 @@ export const getVisibleText = (text: string, frame: number, duration: number = 9
   ));
   
   return text.slice(0, visibleChars);
-}; 
+};
+
+(typing as AnimationWithDescription).description = "Text appears with typing effect";
+(typing as any).defaultDuration = 90; 

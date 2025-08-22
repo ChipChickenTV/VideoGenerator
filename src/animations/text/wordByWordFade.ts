@@ -1,7 +1,9 @@
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationWithDescription } from '../types';
 
-export const wordByWordFade: AnimationPlugin = ({ duration, text = '', chunkSize = 1 }) => {
-  const effectiveDuration = duration ?? text.length * 3;
+export const wordByWordFade: AnimationPlugin = ({ duration, text = '', chunkSize = 1 } = {}) => {
+  const defaultDuration = (wordByWordFade as any).defaultDuration;
+  const finalDuration = duration || defaultDuration;
+  const effectiveDuration = text.length > 0 ? text.length * 3 : finalDuration;
 
   // HTML 태그와 텍스트를 분리하여 처리
   const parts = text.trim().match(/(<[^>]+>|[^<]+)/g) || [];
@@ -35,3 +37,6 @@ export const wordByWordFade: AnimationPlugin = ({ duration, text = '', chunkSize
     totalChunks,
   };
 };
+
+(wordByWordFade as AnimationWithDescription).description = "Text appears word by word with fade effect";
+(wordByWordFade as any).defaultDuration = 90;

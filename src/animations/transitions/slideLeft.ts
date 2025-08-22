@@ -1,13 +1,12 @@
 import { interpolate } from 'remotion';
 import { TransitionAnimation } from './types';
 
-const TRANSITION_DURATION = 15;
-
-export const slideLeft: TransitionAnimation = (frame, durationInFrames) => {
+export const slideLeft: TransitionAnimation = (frame, duration) => {
+	const animationDuration = duration || (slideLeft as any).defaultDuration;
 	const translateX = interpolate(
 		frame,
-		[0, TRANSITION_DURATION, durationInFrames - TRANSITION_DURATION, durationInFrames],
-		[100, 0, 0, -100], // Enter from right, exit to left
+		[0, animationDuration],
+		[100, 0], // Enter from right, settle at center
 		{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
 	);
 
@@ -15,3 +14,6 @@ export const slideLeft: TransitionAnimation = (frame, durationInFrames) => {
 		transform: `translateX(${translateX}%)`,
 	};
 };
+
+(slideLeft as any).description = "Slide left transition effect";
+(slideLeft as any).defaultDuration = 15;
