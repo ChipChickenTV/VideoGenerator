@@ -3,9 +3,10 @@ import { slideLeft } from './slideLeft';
 import { slideRight } from './slideRight';
 import { wipeUp } from './wipeUp';
 import { TransitionAnimation } from './types';
+import { TypedAnimationFunction } from '../types';
 
 // TypedAnimationFunction을 TransitionAnimation으로 변환하는 wrapper 함수들
-const wrapTransition = (typedAnimation: any): TransitionAnimation => {
+const wrapTransition = (typedAnimation: TypedAnimationFunction): TransitionAnimation => {
 	return (frame: number, duration?: number) => {
 		const result = typedAnimation({ frame, duration });
 		return result.style || {};
@@ -22,6 +23,6 @@ export const transitionAnimations: Record<string, TransitionAnimation> = {
 
 export const getTransitionAnimation = (
 	effect: string
-): any => {
+): TransitionAnimation => {
 	return transitionAnimations[effect];
 };

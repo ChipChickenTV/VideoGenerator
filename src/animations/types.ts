@@ -14,7 +14,7 @@ export interface AnimationPluginOptions {
   duration?: number;
   delay?: number;
   frame?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface AnimationResult {
@@ -34,7 +34,7 @@ export interface AnimationMetadata {
   defaultDuration: number;
   params?: Record<string, {
     type: string;
-    default: any;
+    default: unknown;
     required: boolean;
     description?: string;
   }>;

@@ -1,4 +1,4 @@
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, AnimationMetadata } from '../types';
 import { zoomIn } from './zoomIn';
 import { panRight } from './panRight';
 import { zoomOut } from './zoomOut';
@@ -11,6 +11,6 @@ export const imageAnimations: Record<string, AnimationPlugin> = {
 };
 
 // 다이나믹 임포트를 위한 헬퍼 함수
-export const getImageAnimation = (effect: string): AnimationPlugin & { metadata?: any } => {
+export const getImageAnimation = (effect: string): AnimationPlugin & { metadata?: AnimationMetadata } => {
   return imageAnimations[effect];
 };
