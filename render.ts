@@ -47,7 +47,12 @@ function parseArgs(): CLIArgs {
         i++;
         break;
       case '--codec':
-        result.codec = nextArg as any;
+        if (['h264', 'h265', 'vp8', 'vp9', 'prores'].includes(nextArg)) {
+          result.codec = nextArg as 'h264' | 'h265' | 'vp8' | 'vp9' | 'prores';
+        } else {
+          console.error(`❌ 지원하지 않는 코덱: ${nextArg}. 사용 가능한 코덱: h264, h265, vp8, vp9, prores`);
+          process.exit(1);
+        }
         i++;
         break;
       case '--frame':

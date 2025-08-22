@@ -12,9 +12,11 @@ interface TextAreaProps {
 }
 
 export const TextArea: React.FC<TextAreaProps> = ({ script, templateStyle, audioDurationInFrames }) => {
-  if (!script) return null;
-
+  // Hook을 항상 호출 (React Hook 규칙 준수)
   const { displayText, animationStyle } = useTextAnimation({ script, audioDurationInFrames });
+
+  // script가 없거나 displayText가 없는 경우 빈 컨텐츠 렌더링
+  if (!script) return null;
   const highlightEffect = script.animation?.highlight || 'yellow-box';
   
   // 확장된 스타일 생성

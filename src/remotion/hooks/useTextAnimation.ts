@@ -101,12 +101,20 @@ const getTypingText = (text: string, progress: number) => {
 
 
 interface UseTextAnimationParams {
-  script: VideoProps['media'][0]['script'];
+  script: VideoProps['media'][0]['script'] | null;
   audioDurationInFrames?: number;
 }
 
 export const useTextAnimation = ({ script, audioDurationInFrames }: UseTextAnimationParams) => {
   const frame = useCurrentFrame();
+
+  // script가 null이거나 animation이 없는 경우 안전한 기본값 반환
+  if (!script || !script.animation) {
+    return { 
+      displayText: '', 
+      animationStyle: { opacity: 0 } 
+    };
+  }
 
   const inAnimation = script.animation.in;
   const outAnimation = script.animation.out;
