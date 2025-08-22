@@ -54,7 +54,7 @@ const getInAnimationStyle = (animationType: string, frameInChunk: number, chunkD
     }
     
     return result.style;
-  } catch (error) {
+  } catch {
     // Fallback to default if animation not found
     return { opacity: 1 };
   }
@@ -74,7 +74,7 @@ const getOutAnimationStyle = (animationType: string, frameInChunk: number, chunk
     const result = animationFunction({ duration: animationDuration, delay: startFrame, frame: frameInChunk });
     
     return result.style;
-  } catch (error) {
+  } catch {
     // Fallback to default if animation not found
     return {};
   }

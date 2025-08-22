@@ -1,9 +1,9 @@
 import { interpolate } from 'remotion';
-import { AnimationPluginOptions, TypedAnimationFunction } from '../types';
+import { TypedAnimationFunction } from '../types';
 import { ANIMATION_CONSTANTS } from '../../config/theme';
 
 export const typing: TypedAnimationFunction = Object.assign(
-  ({ duration, text = '' }: AnimationPluginOptions & { text?: string } = {}) => {
+  () => {
     return {
       style: {
         overflow: 'hidden',

@@ -74,6 +74,7 @@ export const generateHighlightStyle = (style?: TemplateStyle): React.CSSProperti
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const generateDecorationText = (style?: TemplateStyle, position?: 'before' | 'after'): string => {
   return '';
 };
