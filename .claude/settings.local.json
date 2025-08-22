@@ -23,7 +23,9 @@
       "Bash(cp:*)",
       "Bash(powershell:*)",
       "Bash(npm start)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(timeout 10 npx tsc --noEmit)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "additionalDirectories": [

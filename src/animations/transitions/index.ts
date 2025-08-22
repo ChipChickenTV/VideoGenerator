@@ -4,16 +4,24 @@ import { slideRight } from './slideRight';
 import { wipeUp } from './wipeUp';
 import { TransitionAnimation } from './types';
 
+// TypedAnimationFunction을 TransitionAnimation으로 변환하는 wrapper 함수들
+const wrapTransition = (typedAnimation: any): TransitionAnimation => {
+	return (frame: number, duration?: number) => {
+		const result = typedAnimation({ frame, duration });
+		return result.style || {};
+	};
+};
+
 export const transitionAnimations: Record<string, TransitionAnimation> = {
 	'none': () => ({}),
-	fade,
-	'slide-left': slideLeft,
-	'slide-right': slideRight,
-	'wipe-up': wipeUp,
+	fade: wrapTransition(fade),
+	'slide-left': wrapTransition(slideLeft),
+	'slide-right': wrapTransition(slideRight),
+	'wipe-up': wrapTransition(wipeUp),
 };
 
 export const getTransitionAnimation = (
 	effect: string
-): TransitionAnimation => {
+): any => {
 	return transitionAnimations[effect];
 };

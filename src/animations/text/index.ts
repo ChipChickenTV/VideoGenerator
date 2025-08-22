@@ -1,5 +1,5 @@
 import { interpolate } from 'remotion';
-import { AnimationPlugin } from '../types';
+import { AnimationPlugin, TypedAnimationFunction } from '../types';
 import { fadeIn } from './fadeIn';
 import { fadeOut } from './fadeOut';
 import { typing } from './typing';
@@ -10,7 +10,7 @@ import { slideDown } from './slideDown';
 
 export { highlightStyles };
 
-export const textAnimations: Record<string, AnimationPlugin> = {
+export const textAnimations: Record<string, TypedAnimationFunction | AnimationPlugin> = {
   'none': () => ({ style: {} }),
   'fadeIn': fadeIn,
   'fadeOut': fadeOut,
@@ -21,7 +21,7 @@ export const textAnimations: Record<string, AnimationPlugin> = {
 };
 
 // 다이나믹 임포트를 위한 헬퍼 함수
-export const getTextAnimation = (effect: string): AnimationPlugin => {
+export const getTextAnimation = (effect: string): TypedAnimationFunction | AnimationPlugin => {
   return textAnimations[effect] || textAnimations['fadeIn'];
 };
 

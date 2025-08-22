@@ -11,6 +11,6 @@ export const imageAnimations: Record<string, AnimationPlugin> = {
 };
 
 // 다이나믹 임포트를 위한 헬퍼 함수
-export const getImageAnimation = (effect: string): AnimationPlugin => {
+export const getImageAnimation = (effect: string): AnimationPlugin & { metadata?: any } => {
   return imageAnimations[effect];
 };

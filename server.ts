@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 import { VideoProps, VideoPropsSchema } from './src/types/VideoProps';
 import { renderVideo } from './src/renderer';
 import { uploadToSupabase } from './src/lib/supabase';
-import { getAllAnimations } from './src/animations';
-import { parameterExtractor } from './src/utils/dynamicParameterExtractor';
+import { getAllAnimations, getTextAnimation, getImageAnimation, getTransitionAnimation } from './src/animations';
+import { TypedAnimationFunction } from './src/animations/types';
 import { analyze1DepthSchema, analyzeFieldSchema } from './src/utils/schemaAnalyzer';
 
 // .env 파일 로드
@@ -105,17 +105,21 @@ app.get('/api/animations', (req, res) => {
   }
 });
 
-// 특정 애니메이션 파라미터 가이드 엔드포인트 (동적 추출)
-app.get('/api/animations/:type/:name', async (req, res) => {
+// 특정 애니메이션 파라미터 가이드 엔드포인트 (메타데이터 기반)
+app.get('/api/animations/:type/:name', (req, res) => {
   try {
     const { type, name } = req.params;
-    const animationKey = `${type}/${name}`;
     
-    // 동적으로 모든 애니메이션 정보 추출 (파라미터 + 설명)
-    const allAnimationInfo = await parameterExtractor.extractAllAnimationInfo();
+    let animation;
+    if (type === 'text') {
+      animation = getTextAnimation(name);
+    } else if (type === 'image') {
+      animation = getImageAnimation(name);
+    } else if (type === 'transition') {
+      animation = getTransitionAnimation(name);
+    }
     
-    // 해당 애니메이션 정보 확인
-    if (!allAnimationInfo[animationKey]) {
+    if (!animation) {
       return res.status(404).json({
         success: false,
         error: 'Animation not found',
@@ -123,12 +127,25 @@ app.get('/api/animations/:type/:name', async (req, res) => {
       });
     }
 
-    const animationInfo = allAnimationInfo[animationKey];
+    // TypedAnimationFunction인지 체크
+    const hasMetadata = 'metadata' in animation && animation.metadata;
+    
+    if (!hasMetadata) {
+      return res.status(404).json({
+        success: false,
+        error: 'Animation metadata not found',
+        message: `Animation ${type}/${name} does not have metadata`
+      });
+    }
+    
+    // hasMetadata 검증 후 안전한 타입 캐스팅
+    const typedAnimation = animation as TypedAnimationFunction;
     
     res.json({
       success: true,
-      ...(animationInfo.description && { description: animationInfo.description }),
-      fields: animationInfo.params
+      description: typedAnimation.metadata.description,
+      fields: typedAnimation.metadata.params || {},
+      defaultDuration: typedAnimation.metadata.defaultDuration
     });
   } catch (error: any) {
     res.status(500).json({
