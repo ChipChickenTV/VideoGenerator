@@ -21,8 +21,13 @@
       "WebFetch(domain:127.0.0.1)",
       "Bash(TASKKILL /F /IM node.exe)",
       "Bash(cp:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(npm start)",
+      "Bash(git add:*)"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "D:\\"
+    ]
   }
 }

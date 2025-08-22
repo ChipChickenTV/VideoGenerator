@@ -1,5 +1,20 @@
 import { z } from 'zod';
 
+// Zod 내부 타입 정의를 위한 확장 인터페이스
+interface ZodDefExtended {
+  _def?: {
+    description?: string;
+    innerType?: z.ZodType;
+    schema?: z.ZodType;
+    type?: z.ZodType;
+    values?: readonly string[];
+    defaultValue?: () => any;
+  };
+}
+
+// 타입 안전한 Zod 타입 정의
+type ZodTypeWithDef = z.ZodType & ZodDefExtended;
+
 interface FieldInfo {
   type: string;
   required: boolean;
@@ -90,8 +105,9 @@ function analyzeZodType1Depth(zodType: z.ZodType): FieldInfo {
   let description: string | undefined = undefined;
   
   // description 추출 (언래핑 전에 먼저 확인)
-  if ((currentType as any)._def?.description) {
-    description = (currentType as any)._def.description;
+  const typedCurrentType = currentType as ZodTypeWithDef;
+  if (typedCurrentType._def?.description) {
+    description = typedCurrentType._def.description;
   }
   
   // ZodOptional 언래핑
@@ -100,8 +116,9 @@ function analyzeZodType1Depth(zodType: z.ZodType): FieldInfo {
     currentType = currentType._def.innerType;
     
     // Optional 내부에도 description이 있을 수 있음
-    if (!description && (currentType as any)._def?.description) {
-      description = (currentType as any)._def.description;
+    const typedInnerType = currentType as ZodTypeWithDef;
+    if (!description && typedInnerType._def?.description) {
+      description = typedInnerType._def.description;
     }
   }
   
@@ -111,8 +128,9 @@ function analyzeZodType1Depth(zodType: z.ZodType): FieldInfo {
     currentType = currentType._def.innerType;
     
     // Default 내부에도 description이 있을 수 있음
-    if (!description && (currentType as any)._def?.description) {
-      description = (currentType as any)._def.description;
+    const typedInnerType = currentType as ZodTypeWithDef;
+    if (!description && typedInnerType._def?.description) {
+      description = typedInnerType._def.description;
     }
   }
   
@@ -169,8 +187,9 @@ function analyzeZodTypeFullDepth(zodType: z.ZodType): FieldInfo {
   let description: string | undefined = undefined;
   
   // description 추출 (언래핑 전에 먼저 확인)
-  if ((currentType as any)._def?.description) {
-    description = (currentType as any)._def.description;
+  const typedCurrentType = currentType as ZodTypeWithDef;
+  if (typedCurrentType._def?.description) {
+    description = typedCurrentType._def.description;
   }
   
   // ZodOptional 언래핑
@@ -179,8 +198,9 @@ function analyzeZodTypeFullDepth(zodType: z.ZodType): FieldInfo {
     currentType = currentType._def.innerType;
     
     // Optional 내부에도 description이 있을 수 있음
-    if (!description && (currentType as any)._def?.description) {
-      description = (currentType as any)._def.description;
+    const typedInnerType = currentType as ZodTypeWithDef;
+    if (!description && typedInnerType._def?.description) {
+      description = typedInnerType._def.description;
     }
   }
   
@@ -190,8 +210,9 @@ function analyzeZodTypeFullDepth(zodType: z.ZodType): FieldInfo {
     currentType = currentType._def.innerType;
     
     // Default 내부에도 description이 있을 수 있음
-    if (!description && (currentType as any)._def?.description) {
-      description = (currentType as any)._def.description;
+    const typedInnerType = currentType as ZodTypeWithDef;
+    if (!description && typedInnerType._def?.description) {
+      description = typedInnerType._def.description;
     }
   }
   
@@ -225,26 +246,30 @@ function analyzeZodTypeFullDepth(zodType: z.ZodType): FieldInfo {
     typeString = 'enum';
     // ZodEnum에서 선택 가능한 값들을 동적으로 추출
     options = currentType._def.values as string[];
-  } else if ((currentType as any)._def?.innerType) {
-    // ZodRefine, ZodEffects 등의 경우 내부 타입을 분석
-    const innerType = (currentType as any)._def.innerType;
-    const innerResult = analyzeZodTypeFullDepth(innerType);
-    return {
-      ...innerResult,
-      required: !isOptional && defaultValue === undefined,
-      default: defaultValue !== undefined ? defaultValue : innerResult.default,
-      description: description || innerResult.description
-    };
-  } else if ((currentType as any)._def?.schema) {
-    // ZodEffects의 경우
-    const schemaType = (currentType as any)._def.schema;
-    const schemaResult = analyzeZodTypeFullDepth(schemaType);
-    return {
-      ...schemaResult,
-      required: !isOptional && defaultValue === undefined,
-      default: defaultValue !== undefined ? defaultValue : schemaResult.default,
-      description: description || schemaResult.description
-    };
+  } else {
+    // ZodRefine, ZodEffects 등의 특수 타입들 처리
+    const typedSpecialType = currentType as ZodTypeWithDef;
+    if (typedSpecialType._def?.innerType) {
+      // ZodRefine, ZodEffects 등의 경우 내부 타입을 분석
+      const innerType = typedSpecialType._def.innerType;
+      const innerResult = analyzeZodTypeFullDepth(innerType);
+      return {
+        ...innerResult,
+        required: !isOptional && defaultValue === undefined,
+        default: defaultValue !== undefined ? defaultValue : innerResult.default,
+        description: description || innerResult.description
+      };
+    } else if (typedSpecialType._def?.schema) {
+      // ZodEffects의 경우
+      const schemaType = typedSpecialType._def.schema;
+      const schemaResult = analyzeZodTypeFullDepth(schemaType);
+      return {
+        ...schemaResult,
+        required: !isOptional && defaultValue === undefined,
+        default: defaultValue !== undefined ? defaultValue : schemaResult.default,
+        description: description || schemaResult.description
+      };
+    }
   }
   
   const result: FieldInfo = {
