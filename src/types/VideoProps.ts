@@ -20,7 +20,7 @@ export const SceneSchema = z.object({
     voice: z.string().optional().describe('음성 파일 경로'),
     transition: z.object({
       effect: z.enum(['none', 'slide-left', 'slide-right', 'fade', 'wipe-up']).default('none').describe('전환 효과'),
-      duration: z.number().optional().describe('전환 지속시간 (초)'),
+      duration: z.number().optional().describe('전환 지속시간 (프레임)'),
     }).optional().describe('다음 씬으로의 전환 설정'),
 }).describe('비디오의 개별 씬(장면) 정의');
 

@@ -22,10 +22,7 @@ export const SceneSlide: React.FC<SceneContentProps> = ({
 
   const effect = scene.transition?.effect ?? 'none';
   const transitionAnimation = getTransitionAnimation(effect);
-  // Use transition duration if specified (convert from seconds to frames), otherwise use scene duration
-  const transitionDuration = scene.transition?.duration 
-    ? Math.ceil(scene.transition.duration * fps)
-    : durationInFrames;
+  const transitionDuration = scene.transition?.duration || durationInFrames;
   const transitionStyle = transitionAnimation(frame, transitionDuration);
 
   const audioDurationInFrames = scene.audioDuration
