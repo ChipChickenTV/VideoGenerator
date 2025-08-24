@@ -8,7 +8,7 @@ interface ZodDefExtended {
     schema?: z.ZodType;
     type?: z.ZodType;
     values?: readonly string[];
-    defaultValue?: () => any;
+    defaultValue?: () => unknown;
   };
 }
 
@@ -18,7 +18,7 @@ type ZodTypeWithDef = z.ZodType & ZodDefExtended;
 interface FieldInfo {
   type: string;
   required: boolean;
-  default?: any;
+  default?: unknown;
   description?: string;
   fields?: Record<string, FieldInfo>; // 중첩된 object의 필드들
   itemFields?: Record<string, FieldInfo>; // array 아이템이 object인 경우의 필드들
@@ -32,7 +32,7 @@ interface SchemaAnalysisResult {
 /**
  * Zod 스키마를 분석해서 1depth 구조 정보를 추출합니다.
  */
-export function analyze1DepthSchema(schema: z.ZodObject<any>): SchemaAnalysisResult {
+export function analyze1DepthSchema(schema: z.ZodObject<z.ZodRawShape>): SchemaAnalysisResult {
   const shape = schema.shape;
   const fields: Record<string, FieldInfo> = {};
   
@@ -46,7 +46,7 @@ export function analyze1DepthSchema(schema: z.ZodObject<any>): SchemaAnalysisRes
 /**
  * 특정 필드의 상세 스키마를 분석합니다.
  */
-export function analyzeFieldSchema(schema: z.ZodObject<any>, fieldName: string): SchemaAnalysisResult | null {
+export function analyzeFieldSchema(schema: z.ZodObject<z.ZodRawShape>, fieldName: string): SchemaAnalysisResult | null {
   const shape = schema.shape;
   const fieldType = shape[fieldName] as z.ZodType;
   
@@ -84,7 +84,7 @@ export function analyzeFieldSchema(schema: z.ZodObject<any>, fieldName: string):
 /**
  * 전체 depth 스키마를 분석합니다.
  */
-function analyzeFullDepthSchema(schema: z.ZodObject<any>): SchemaAnalysisResult {
+function analyzeFullDepthSchema(schema: z.ZodObject<z.ZodRawShape>): SchemaAnalysisResult {
   const shape = schema.shape;
   const fields: Record<string, FieldInfo> = {};
   
@@ -101,7 +101,7 @@ function analyzeFullDepthSchema(schema: z.ZodObject<any>): SchemaAnalysisResult 
 function analyzeZodType1Depth(zodType: z.ZodType): FieldInfo {
   let currentType = zodType;
   let isOptional = false;
-  let defaultValue: any = undefined;
+  let defaultValue: unknown = undefined;
   let description: string | undefined = undefined;
   
   // description 추출 (언래핑 전에 먼저 확인)
@@ -183,7 +183,7 @@ function analyzeZodType1Depth(zodType: z.ZodType): FieldInfo {
 function analyzeZodTypeFullDepth(zodType: z.ZodType): FieldInfo {
   let currentType = zodType;
   let isOptional = false;
-  let defaultValue: any = undefined;
+  let defaultValue: unknown = undefined;
   let description: string | undefined = undefined;
   
   // description 추출 (언래핑 전에 먼저 확인)

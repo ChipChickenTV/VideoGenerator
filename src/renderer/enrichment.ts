@@ -37,8 +37,9 @@ export async function enrichPropsWithAudioDuration(props: VideoProps, verbose: b
             if (verbose) console.log(`🎵 Audio duration found: ${duration.toFixed(2)}s`);
             return { ...scene, audioDuration: duration };
           }
-        } catch (error: any) {
-          if (verbose) console.error(`❌ Error analyzing audio duration for "${scene.voice}": ${error.message}`);
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          if (verbose) console.error(`❌ Error analyzing audio duration for "${scene.voice}": ${errorMessage}`);
         }
       }
       return scene;
@@ -63,8 +64,9 @@ export async function enrichPropsWithRemoteScript(props: VideoProps, verbose: bo
           const text = await response.text();
           if (verbose) console.log(`✍️ Script loaded successfully.`);
           return { ...scene, script: { ...scene.script, text } };
-        } catch (error: any) {
-          if (verbose) console.error(`❌ Error loading script from "${scene.script.url}": ${error.message}`);
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          if (verbose) console.error(`❌ Error loading script from "${scene.script.url}": ${errorMessage}`);
         }
       }
       return scene;

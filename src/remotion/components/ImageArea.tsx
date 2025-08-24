@@ -15,9 +15,10 @@ export const ImageArea: React.FC<ImageAreaProps> = ({ image }) => {
   const animationEffect = image.animation.effect;
   const filterEffect = image.animation.filter;
   
-  // 애니메이션 스타일 가져오기
   const animation = getImageAnimation(animationEffect);
-  const animationResult = animation();
+  const animationWithMetadata = animation as { metadata?: { defaultDuration: number } };
+  const duration = image.animation.duration || animationWithMetadata?.metadata?.defaultDuration || 90;
+  const animationResult = animation({ duration });
   
   // 필터 스타일 가져오기
   const filterStyle = getImageFilter(filterEffect);

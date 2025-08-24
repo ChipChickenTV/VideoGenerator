@@ -8,13 +8,11 @@ import { Scene, TemplateStyle } from '@/types/VideoProps';
 
 interface SceneContentProps {
   scene: Scene;
-  durationInFrames: number;
   templateStyle?: TemplateStyle;
 }
 
 export const SceneSlide: React.FC<SceneContentProps> = ({
   scene,
-  durationInFrames,
   templateStyle,
 }) => {
   const frame = useCurrentFrame();
@@ -22,8 +20,10 @@ export const SceneSlide: React.FC<SceneContentProps> = ({
 
   const effect = scene.transition?.effect ?? 'none';
   const transitionAnimation = getTransitionAnimation(effect);
-  const transitionDuration = scene.transition?.duration || durationInFrames;
-  const transitionStyle = transitionAnimation(frame, transitionDuration);
+  const transitionWithMetadata = transitionAnimation as { metadata?: { defaultDuration: number } };
+  const transitionDuration = scene.transition?.duration || transitionWithMetadata?.metadata?.defaultDuration || 15;
+  const transitionResult = transitionAnimation({ duration: transitionDuration, frame });
+  const transitionStyle = transitionResult.style;
 
   const audioDurationInFrames = scene.audioDuration
     ? Math.ceil(scene.audioDuration * fps)

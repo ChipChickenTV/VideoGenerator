@@ -6,6 +6,7 @@ export const SceneSchema = z.object({
       animation: z.object({
         effect: z.enum(['none', 'zoom-in', 'pan-right', 'zoom-out']).default('none').describe('이미지 애니메이션 효과'),
         filter: z.enum(['none', 'grayscale', 'sepia', 'blur']).default('none').describe('이미지 필터 효과'),
+        duration: z.number().optional().describe('이미지 애니메이션 지속시간 (프레임)'),
       }).describe('이미지 애니메이션 설정'),
     }).optional().describe('씬에 표시할 이미지 정보'),
     script: z.object({
@@ -13,7 +14,9 @@ export const SceneSchema = z.object({
       url: z.string().url().optional().describe('텍스트를 가져올 URL'),
       animation: z.object({
         in: z.enum(['none', 'fadeIn', 'typing', 'slideUp', 'word-by-word-fade']).default('none').describe('텍스트 등장 애니메이션'),
+        inDuration: z.number().optional().describe('등장 애니메이션 지속시간 (프레임)'),
         out: z.enum(['none', 'fadeOut', 'slideDown']).default('none').describe('텍스트 퇴장 애니메이션'),
+        outDuration: z.number().optional().describe('퇴장 애니메이션 지속시간 (프레임)'),
         highlight: z.enum(['none', 'yellow-box', 'red-box', 'blue-box', 'green-box', 'underline', 'bold', 'italic', 'glow', 'strike', 'outline']).default('yellow-box').describe('텍스트 하이라이트 효과'),
       }).describe('텍스트 애니메이션 설정'),
     }).refine(data => data.text || data.url, { message: "script object must have either 'text' or 'url'" }).describe('씬의 텍스트 스크립트 정보'),

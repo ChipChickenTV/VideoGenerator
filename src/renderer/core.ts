@@ -93,9 +93,10 @@ async function executeRender(
     if (verbose) console.log(`✅ ${renderType} 렌더링 완료! (${duration.toFixed(2)}초)`);
 
     return { success: true, outputPath, duration };
-  } catch (error: any) {
-    if (verbose) console.error(`❌ 렌더링 실패: ${error.message}`);
-    return { success: false, outputPath, error: error.message };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (verbose) console.error(`❌ 렌더링 실패: ${errorMessage}`);
+    return { success: false, outputPath, error: errorMessage };
   }
 }
 

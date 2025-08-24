@@ -53,18 +53,39 @@ JSON Input → Zod Validation → Enrichment → Remotion Rendering → Video Ou
 - `POST /render` - Video rendering with `inputUrl`
 - `GET /output/*` - Download files
 
-## Animation System
+## Animation System (Unified Architecture)
+
+All animations now use consistent `TypedAnimationFunction` interface with metadata:
+```typescript
+animation({ duration?, frame, delay? }) → { style: CSSProperties }
+```
+
+### Duration System (Frame-based)
+- **All durations in frames** (30fps standard)
+- JSON input: `duration`, `inDuration`, `outDuration` (frames)
+- Auto-fallback: `metadata.defaultDuration` → hardcoded defaults
+- No seconds-to-frames conversion needed
 
 ### Text Animations
-- **In**: `fadeIn`, `typing`, `slideUp`, `word-by-word-fade`
+- **In**: `fadeIn`, `typing`, `slideUp`, `word-by-word-fade` 
 - **Out**: `fadeOut`, `slideDown`
 - **Highlights**: `yellow-box`, `red-box`, `underline`, `bold`, `glow`
+- **Duration control**: `script.animation.inDuration`, `outDuration`
 
-### Image Animations
-- `zoom-in`, `zoom-out`, `pan-right`, `static`
+### Image Animations  
+- `zoom-in`, `zoom-out`, `pan-right`, `none`
+- **Duration control**: `image.animation.duration`
 
 ### Transitions
-- `fade`, `slide-left`, `slide-right`, `wipe-up`
+- `fade`, `slide-left`, `slide-right`, `wipe-up`, `none`
+- **Duration control**: `transition.duration`
+- **No wrapping**: Direct `TypedAnimationFunction` usage
+
+### Architecture Notes
+- All `index.ts` files are simple export collections
+- Animation-specific logic stays in individual files
+- Example: `getCurrentTextChunk` moved to `wordByWordFade.ts` only
+- Consistent metadata structure for auto-documentation
 
 ## Key Development Notes
 

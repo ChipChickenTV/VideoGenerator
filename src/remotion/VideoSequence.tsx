@@ -75,7 +75,6 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
 										{scene.voice && <Audio src={scene.voice} />}
 										<SceneSlide
 											scene={scene}
-											durationInFrames={sceneDuration}
 											templateStyle={templateStyle}
 										/>
 									</Series.Sequence>

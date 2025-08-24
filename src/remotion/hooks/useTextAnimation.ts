@@ -1,7 +1,8 @@
 import { useCurrentFrame, interpolate } from 'remotion';
 import { VideoProps } from '@/types/VideoProps';
 import React from 'react';
-import { getTextAnimation, getCurrentTextChunk } from '@/animations/text';
+import { getTextAnimation } from '@/animations/text';
+import { getCurrentTextChunk } from '@/animations/text/wordByWordFade';
 
 // 이 파일 내부에서만 사용될 헬퍼 함수들 (export하지 않음)
 const splitTextIntoChunks = (text: string) => {
@@ -37,12 +38,13 @@ const getCurrentChunkInfo = (text: string, frame: number, duration: number) => {
   };
 };
 
-const getInAnimationStyle = (animationType: string, frameInChunk: number, chunkDuration: number) => {
-  const animationDuration = Math.min(chunkDuration * 0.3, 20);
+const getInAnimationStyle = (animationType: string, frameInChunk: number, chunkDuration: number, customDuration?: number) => {
+  const animationFunction = getTextAnimation(animationType);
+  const animationWithMetadata = animationFunction as { metadata?: { defaultDuration: number } };
+  const defaultDuration = animationWithMetadata?.metadata?.defaultDuration || 30;
+  const animationDuration = customDuration || Math.min(chunkDuration * 0.3, 20, defaultDuration);
   
-  // Use actual animation functions from animations/text
   try {
-    const animationFunction = getTextAnimation(animationType);
     const result = animationFunction({ duration: animationDuration, delay: 0, frame: frameInChunk });
     
     // Special handling for typing effect
@@ -60,17 +62,18 @@ const getInAnimationStyle = (animationType: string, frameInChunk: number, chunkD
   }
 };
 
-const getOutAnimationStyle = (animationType: string, frameInChunk: number, chunkDuration: number) => {
-  const animationDuration = Math.min(chunkDuration * 0.3, 20);
-  const startFrame = chunkDuration - animationDuration;
-
+const getOutAnimationStyle = (animationType: string, frameInChunk: number, chunkDuration: number, customDuration?: number) => {
   if (animationType === 'none') {
     return {};
   }
   
-  // Use actual animation functions from animations/text
+  const animationFunction = getTextAnimation(animationType);
+  const animationWithMetadata = animationFunction as { metadata?: { defaultDuration: number } };
+  const defaultDuration = animationWithMetadata?.metadata?.defaultDuration || 30;
+  const animationDuration = customDuration || Math.min(chunkDuration * 0.3, 20, defaultDuration);
+  const startFrame = chunkDuration - animationDuration;
+  
   try {
-    const animationFunction = getTextAnimation(animationType);
     const result = animationFunction({ duration: animationDuration, delay: startFrame, frame: frameInChunk });
     
     return result.style;
@@ -132,8 +135,8 @@ export const useTextAnimation = ({ script, audioDurationInFrames }: UseTextAnima
   const chunkInfo = getCurrentChunkInfo(script.text || '', frame, duration);
   const { frameInChunk, chunkDuration } = chunkInfo;
 
-  const inStyle = getInAnimationStyle(inAnimation, frameInChunk, chunkDuration);
-  const outStyle = getOutAnimationStyle(outAnimation, frameInChunk, chunkDuration);
+  const inStyle = getInAnimationStyle(inAnimation, frameInChunk, chunkDuration, script.animation.inDuration);
+  const outStyle = getOutAnimationStyle(outAnimation, frameInChunk, chunkDuration, script.animation.outDuration);
 
   // `typing` 효과를 위한 displayText 처리
   let displayText = chunkInfo.text;
