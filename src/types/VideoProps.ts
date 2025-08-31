@@ -139,10 +139,9 @@ export const VideoPropsSchema = z.object({
   templateStyle: TemplateStyleSchema.optional().describe('비디오 전체 스타일 설정 (폰트, 색상, 레이아웃 등)'),
   title: z.string().optional().describe('비디오 제목'),
   postMeta: z.object({
-    author: z.string().default('익명'),
-    time: z.string().default('14:25'),
-    viewCount: z.string().default('3,463,126'),
-  }).optional().describe('게시물 정보 (작성자, 시간, 조회수)'),
+    leftText: z.string().optional().describe('왼쪽 정렬 텍스트'),
+    rightText: z.string().optional().describe('오른쪽 정렬 텍스트'),
+  }).optional().describe('게시물 메타 정보 (왼쪽/오른쪽 텍스트)'),
   media: z.array(SceneSchema).describe('비디오를 구성하는 씬(장면) 배열'),
 });
 

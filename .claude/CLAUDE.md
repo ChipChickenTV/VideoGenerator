@@ -94,6 +94,7 @@ animation({ duration?, frame, delay? }) → { style: CSSProperties }
 - Use `/api/schema` to inspect structure
 - Video duration auto-calculated from `audioDuration` fields
 - Default duration: 3 seconds, FPS: 30
+- **postMeta**: Uses `leftText`/`rightText` for custom positioning instead of individual fields
 
 ### Adding Animations
 1. Create in `src/animations/{type}/`
@@ -121,7 +122,11 @@ curl -X POST http://localhost:3001/render \
   -d '{
     "videoData": {
       "title": "My Video",
-      "scenes": [...],
+      "postMeta": {
+        "leftText": "작성자 | 오후 14:25",
+        "rightText": "조회수 1,287"
+      },
+      "media": [...],
       "templateStyle": {...}
     },
     "outputConfig": {

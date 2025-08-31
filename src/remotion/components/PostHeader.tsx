@@ -42,22 +42,18 @@ export const PostHeader: React.FC<PostHeaderProps> = ({
       )}
       
       {/* 메타 정보 */}
-      {postMeta && (
+      {postMeta && (postMeta.leftText || postMeta.rightText) && (
         <div style={{
           ...metaStyle,
           fontSize: metaStyle.fontSize || THEME_CONSTANTS.TYPOGRAPHY.META_TEXT_SIZE,
           display: 'flex',
           alignItems: 'center',
-          gap: 20,
+          justifyContent: 'space-between',
           fontFamily: THEME_CONSTANTS.FONTS.PRIMARY,
           fontStyle: templateStyle?.fontStyle?.text === 'italic' ? 'italic' : 'normal',
         }}>
-          <span>{postMeta.author || '익명'}</span>
-          <span>|</span>
-          <span>{postMeta.time || '14:25'}</span>
-          <span style={{ marginLeft: 'auto' }}>
-            조회수 {postMeta.viewCount || '3,463,126'}
-          </span>
+          {postMeta.leftText && <span>{postMeta.leftText}</span>}
+          {postMeta.rightText && <span>{postMeta.rightText}</span>}
         </div>
       )}
     </div>
