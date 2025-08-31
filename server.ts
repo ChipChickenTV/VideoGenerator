@@ -160,33 +160,68 @@ app.get('/api/animations/:type/:name', (req, res) => {
 
 
 
-// 비디오 렌더링 엔드포인트 (inputUrl 방식)
+// 비디오 렌더링 엔드포인트 (inputUrl 또는 videoData 방식)
 app.post('/render', async (req, res) => {
   const startTime = Date.now();
   
   try {
-    const { inputUrl } = req.body;
+    const { inputUrl, videoData, outputConfig } = req.body;
     
-    if (!inputUrl) {
+    // inputUrl과 videoData 중 하나는 필수
+    if (!inputUrl && !videoData) {
       return res.status(400).json({
         success: false,
-        error: 'inputUrl is required'
+        error: 'Either inputUrl or videoData is required'
+      });
+    }
+
+    // 둘 다 있으면 에러
+    if (inputUrl && videoData) {
+      return res.status(400).json({
+        success: false,
+        error: 'Cannot specify both inputUrl and videoData. Choose one.'
       });
     }
     
-    console.log('🚀 입력 URL에서 JSON 다운로드:', inputUrl);
+    let props: VideoProps;
+    let bucket: string;
+    let supabaseVideoPath: string;
     
-    // inputUrl에서 JSON 다운로드
-    const response = await fetch(inputUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch JSON from ${inputUrl}: ${response.statusText}`);
+    if (inputUrl) {
+      // 기존 방식: inputUrl에서 JSON 다운로드
+      console.log('🚀 입력 URL에서 JSON 다운로드:', inputUrl);
+      
+      const response = await fetch(inputUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch JSON from ${inputUrl}: ${response.statusText}`);
+      }
+      
+      const rawData = await response.json();
+      console.log('📄 JSON 다운로드 완료');
+      props = rawData as VideoProps;
+      
+      // inputUrl에서 버킷과 경로 추출
+      // 예: http://.../storage/v1/object/public/ssul/FinalResult/thziiv32gs_new.json
+      const urlParts = new URL(inputUrl);
+      const pathParts = urlParts.pathname.split('/');
+      
+      // "/storage/v1/object/public/".length = 5
+      bucket = pathParts[5];
+      const supabasePathPrefix = pathParts.slice(6, -1).join('/'); // 'FinalResult'
+      const jsonFilename = path.basename(urlParts.pathname, '.json');
+      supabaseVideoPath = `${supabasePathPrefix}/${jsonFilename}.mp4`;
+      
+    } else {
+      // 신규 방식: videoData 직접 사용
+      console.log('📄 직접 JSON 데이터 사용');
+      props = videoData as VideoProps;
+      
+      // outputConfig에서 설정 추출
+      const filename = outputConfig?.filename || `video_${Date.now()}`;
+      bucket = outputConfig?.bucket || 'ssul';
+      const pathPrefix = outputConfig?.path || 'videos';
+      supabaseVideoPath = `${pathPrefix}/${filename}.mp4`;
     }
-    
-    const rawData = await response.json();
-    console.log('📄 JSON 다운로드 완료');
-    
-    // Props 검증 및 변환은 renderer 모듈로 위임합니다.
-    const props = rawData as VideoProps;
     
     // 렌더링 실행
     const outputPath = `out/video_${Date.now()}.mp4`;
@@ -202,17 +237,6 @@ app.post('/render', async (req, res) => {
     
     if (result.success) {
       console.log(`✅ 렌더링 성공! (${result.duration}ms)`);
-      
-      // inputUrl에서 버킷과 경로 추출
-      // 예: http://.../storage/v1/object/public/ssul/FinalResult/thziiv32gs_new.json
-      const urlParts = new URL(inputUrl);
-      const pathParts = urlParts.pathname.split('/');
-      
-      // "/storage/v1/object/public/".length = 5
-      const bucket = pathParts[5];
-      const supabasePathPrefix = pathParts.slice(6, -1).join('/'); // 'FinalResult'
-      const jsonFilename = path.basename(urlParts.pathname, '.json');
-      const supabaseVideoPath = `${supabasePathPrefix}/${jsonFilename}.mp4`;
 
       // Supabase에 업로드
       const publicUrl = await uploadToSupabase(result.outputPath, bucket, supabaseVideoPath);
@@ -232,6 +256,7 @@ app.post('/render', async (req, res) => {
         message: 'Video rendering and upload completed successfully',
         videoUrl: publicUrl,
         duration: totalDuration,
+        uploadPath: supabaseVideoPath
       });
     } else {
       console.error(`❌ 렌더링 실패: ${result.error}`);
@@ -286,13 +311,19 @@ app.listen(PORT, () => {
   console.log('  GET /api/schema/:field - 특정 필드 상세 스키마');
   console.log('  GET /api/animations - 사용 가능한 애니메이션 목록');
   console.log('  GET /api/animations/:type/:name - 특정 애니메이션 사용법');
-  console.log('  POST /render - inputUrl로 비디오 렌더링');
+  console.log('  POST /render - inputUrl 또는 videoData로 비디오 렌더링');
   console.log('  GET /output/* - 렌더링 결과 다운로드');
   console.log('');
   console.log('💡 사용법:');
+  console.log('  # 방법 1: URL에서 JSON 가져오기');
   console.log(`  curl -X POST http://localhost:${PORT}/render \\`);
   console.log('    -H "Content-Type: application/json" \\');
   console.log('    -d \'{"inputUrl": "http://your-url/input.json"}\'');
+  console.log('');
+  console.log('  # 방법 2: JSON 직접 전달');
+  console.log(`  curl -X POST http://localhost:${PORT}/render \\`);
+  console.log('    -H "Content-Type: application/json" \\');
+  console.log('    -d \'{"videoData": {...}, "outputConfig": {"filename": "my_video", "bucket": "ssul", "path": "videos"}}\'');
 });
 
 export default app; 

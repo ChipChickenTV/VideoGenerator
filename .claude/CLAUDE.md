@@ -50,7 +50,7 @@ JSON Input → Zod Validation → Enrichment → Remotion Rendering → Video Ou
 - `GET /api/schema` - Schema structure
 - `GET /api/animations` - Available animations
 - `GET /api/animations/:type/:name` - Animation parameters
-- `POST /render` - Video rendering with `inputUrl`
+- `POST /render` - Video rendering with `inputUrl` or `videoData`
 - `GET /output/*` - Download files
 
 ## Animation System (Unified Architecture)
@@ -105,11 +105,50 @@ animation({ duration?, frame, delay? }) → { style: CSSProperties }
 - Style generators in `src/remotion/utils/styleUtils.ts`
 - Header, title, text, meta styled separately
 
-### Testing
+### Video Rendering API
+
+**Method 1: URL 방식 (기존)**
 ```bash
 curl -X POST http://localhost:3001/render \
   -H "Content-Type: application/json" \
   -d '{"inputUrl": "https://your-server.com/config.json"}'
+```
+
+**Method 2: Direct JSON 방식 (신규)**
+```bash
+curl -X POST http://localhost:3001/render \
+  -H "Content-Type: application/json" \
+  -d '{
+    "videoData": {
+      "title": "My Video",
+      "scenes": [...],
+      "templateStyle": {...}
+    },
+    "outputConfig": {
+      "filename": "custom_video",
+      "bucket": "my-bucket",
+      "path": "videos"
+    }
+  }'
+```
+
+**Parameters:**
+- `inputUrl`: JSON 설정 파일 URL (Method 1 전용)
+- `videoData`: VideoProps 객체 (Method 2 전용)
+- `outputConfig`: 출력 설정 (Method 2 전용)
+  - `filename`: 파일명 (기본값: `video_${timestamp}`)
+  - `bucket`: Supabase 버킷 (기본값: `ssul`)
+  - `path`: 업로드 경로 (기본값: `videos`)
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Video rendering and upload completed successfully",
+  "videoUrl": "https://...",
+  "duration": 30000,
+  "uploadPath": "videos/my_video.mp4"
+}
 ```
 
 ### Important
