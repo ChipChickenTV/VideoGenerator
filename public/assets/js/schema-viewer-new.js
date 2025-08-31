@@ -335,7 +335,6 @@ class SchemaViewer {
     isAnimationLibraryField(fieldPath) {
         const animationPaths = [
             'image.animation.effect',
-            'image.animation.filter',
             'script.animation.in',
             'script.animation.out', 
             'script.animation.highlight',
@@ -593,7 +592,6 @@ class SchemaViewer {
             image: '🖼️',
             text: '📝',
             transition: '🔄',
-            filter: '🎨',
             highlight: '✨'
         };
         return icons[type] || '🎬';

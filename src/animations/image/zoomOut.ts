@@ -1,13 +1,12 @@
 import { interpolate, useCurrentFrame } from 'remotion';
-import { AnimationPluginOptions, TypedAnimationFunction } from '../types';
+import { AnimationPluginOptions, SceneLengthAnimation } from '../types';
 
-export const zoomOut: TypedAnimationFunction = Object.assign(
-  ({ duration }: AnimationPluginOptions = {}) => {
+export const zoomOut: SceneLengthAnimation = Object.assign(
+  ({ duration = 90 }: AnimationPluginOptions = {}) => {
     const frame = useCurrentFrame();
-    const animationDuration = duration || zoomOut.metadata.defaultDuration;
     const scale = interpolate(
       frame,
-      [0, animationDuration],
+      [0, duration],
       [1.15, 1],
       {
         extrapolateLeft: 'clamp',
@@ -24,15 +23,7 @@ export const zoomOut: TypedAnimationFunction = Object.assign(
   {
     metadata: {
       description: "이미지를 점진적으로 축소",
-      defaultDuration: 90,
-      params: {
-        duration: {
-          type: 'number',
-          default: 90,
-          required: false,
-          description: '줌아웃 애니메이션 지속 시간 (프레임)'
-        }
-      }
+      params: {}
     }
   }
 );

@@ -44,7 +44,22 @@ export interface AnimationWithMetadata extends AnimationPlugin {
   metadata: AnimationMetadata;
 }
 
-// 타입 안전한 애니메이션 함수 타입
+// Scene 길이에 맞춰 실행되는 애니메이션 (Image)
+export interface SceneLengthAnimationMetadata {
+  description: string;
+  params?: Record<string, {
+    type: string;
+    default: unknown;
+    required: boolean;
+    description?: string;
+  }>;
+}
+
+export type SceneLengthAnimation = AnimationPlugin & {
+  metadata: SceneLengthAnimationMetadata;
+};
+
+// 타입 안전한 애니메이션 함수 타입 (Text, Transition)
 export type TypedAnimationFunction = AnimationPlugin & {
   metadata: AnimationMetadata;
 }

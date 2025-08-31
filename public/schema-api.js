@@ -39,7 +39,7 @@ class SchemaAPI {
             const data = await response.json();
             
             // 각 애니메이션의 상세 정보를 병렬로 로드 (파라미터가 있는 타입만)
-            const noParamTypes = ['highlight', 'filter'];
+            const noParamTypes = ['highlight'];
             
             const detailedAnimations = await Promise.allSettled(
                 data.animations.map(async (anim) => {
