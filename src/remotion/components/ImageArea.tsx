@@ -6,17 +6,16 @@ import { getImageAnimation } from '@/animations/image';
 
 interface ImageAreaProps {
   image: VideoProps['media'][0]['image'];
+  audioDurationInFrames: number;
 }
 
-export const ImageArea: React.FC<ImageAreaProps> = ({ image }) => {
+export const ImageArea: React.FC<ImageAreaProps> = ({ image, audioDurationInFrames }) => {
   if (!image) return null;
   
   const animationEffect = image.animation.effect;
   
   const animation = getImageAnimation(animationEffect);
-  const animationWithMetadata = animation as { metadata?: { defaultDuration: number } };
-  const duration = image.animation.duration || animationWithMetadata?.metadata?.defaultDuration || 90;
-  const animationResult = animation({ duration });
+  const animationResult = animation({ duration: audioDurationInFrames });
   
   
   // URL이 로컬 파일 경로인지 확인 (public/ 폴더 기준)

@@ -74,7 +74,7 @@ animation({ duration?, frame, delay? }) → { style: CSSProperties }
 
 ### Image Animations  
 - `zoom-in`, `zoom-out`, `pan-right`, `none`
-- **Duration control**: `image.animation.duration`
+- **Duration**: Automatically matches scene duration (audioDuration)
 
 ### Transitions
 - `fade`, `slide-left`, `slide-right`, `wipe-up`, `none`

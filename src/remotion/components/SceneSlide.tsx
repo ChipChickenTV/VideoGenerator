@@ -58,6 +58,7 @@ export const SceneSlide: React.FC<SceneContentProps> = ({
           {scene.image && (
             <ImageArea 
               image={scene.image}
+              audioDurationInFrames={audioDurationInFrames}
             />
           )}
         </div>
