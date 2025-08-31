@@ -5,7 +5,6 @@ export const SceneSchema = z.object({
       url: z.string().min(1).describe('이미지 URL'),
       animation: z.object({
         effect: z.enum(['none', 'zoom-in', 'pan-right', 'zoom-out']).default('none').describe('이미지 애니메이션 효과'),
-        filter: z.enum(['none', 'grayscale', 'sepia', 'blur']).default('none').describe('이미지 필터 효과'),
         duration: z.number().optional().describe('이미지 애니메이션 지속시간 (프레임)'),
       }).describe('이미지 애니메이션 설정'),
     }).optional().describe('씬에 표시할 이미지 정보'),

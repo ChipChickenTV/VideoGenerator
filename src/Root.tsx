@@ -64,7 +64,6 @@ export const Root: React.FC = () => {
                 url: "image.png",
                 animation: {
                   effect: "zoom-in",
-                  filter: "none",
                 },
               },
               script: {

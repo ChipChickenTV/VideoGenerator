@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 
 export const zodAnimationInfo = z.object({
 	name: z.string(),
-	type: z.enum(['image', 'text', 'transition', 'filter', 'highlight']),
+	type: z.enum(['image', 'text', 'transition', 'highlight']),
 	description: z.string(),
   demoContent: z.string().optional(),
 });

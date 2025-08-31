@@ -1,7 +1,6 @@
 import { imageAnimations } from './image';
 import { textAnimations, highlightStyles } from './text';
 import { transitionAnimations } from './transitions';
-import { imageFilters } from './image/filters';
 import { AnimationInfo, TypedAnimationFunction } from './types';
 
 // 타입 안전한 애니메이션 메타데이터 접근 함수
@@ -50,14 +49,6 @@ export const getAllAnimations = (): AnimationInfo[] => {
     });
   });
 
-  // 필터 효과
-  Object.keys(imageFilters).forEach(name => {
-    animations.push({
-      type: 'filter',
-      name,
-      description: `Filter ${name} effect`,
-    });
-  });
 
   // 하이라이트 효과
   Object.keys(highlightStyles).forEach(name => {
