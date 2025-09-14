@@ -94,6 +94,7 @@ animation({ duration?, frame, delay? }) → { style: CSSProperties }
 - Use `/api/schema` to inspect structure
 - Video duration auto-calculated from `audioDuration` fields
 - Default duration: 3 seconds, FPS: 30
+- **headerTitle**: Header service name (optional, default: "썰풀기")
 - **postMeta**: Uses `leftText`/`rightText` for custom positioning instead of individual fields
 
 ### Adding Animations
@@ -121,6 +122,7 @@ curl -X POST http://localhost:3001/render \
   -H "Content-Type: application/json" \
   -d '{
     "videoData": {
+      "headerTitle": "My App",
       "title": "My Video",
       "postMeta": {
         "leftText": "작성자 | 오후 14:25",

@@ -52,11 +52,11 @@ export const Root: React.FC = () => {
             lineHeight: "1.4",
             letterSpacing: "normal",
           },
+          headerTitle: "썰풀기",
           title: "샘플 비디오",
           postMeta: {
-            author: "익명",
-            time: "14:25",
-            viewCount: "3,463,126",
+            leftText: "익명 | 오후 14:25",
+            rightText: "조회수 3,463,126",
           },
           media: [
             {

@@ -137,6 +137,7 @@ export type Scene = z.infer<typeof SceneSchema> & {
 
 export const VideoPropsSchema = z.object({
   templateStyle: TemplateStyleSchema.optional().describe('비디오 전체 스타일 설정 (폰트, 색상, 레이아웃 등)'),
+  headerTitle: z.string().optional().default('썰풀기').describe('헤더 제목 (앱/서비스 이름)'),
   title: z.string().optional().describe('비디오 제목'),
   postMeta: z.object({
     leftText: z.string().optional().describe('왼쪽 정렬 텍스트'),

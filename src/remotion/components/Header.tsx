@@ -5,9 +5,10 @@ import { generateHeaderStyle, generateDecorationText } from '../utils/styleUtils
 
 interface HeaderProps {
   templateStyle?: TemplateStyle;
+  headerTitle?: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ templateStyle }) => {
+export const Header: React.FC<HeaderProps> = ({ templateStyle, headerTitle }) => {
   const headerStyle = generateHeaderStyle(templateStyle);
   const decorationBefore = generateDecorationText(templateStyle, 'before');
   const decorationAfter = generateDecorationText(templateStyle, 'after');
@@ -50,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ templateStyle }) => {
         textShadow: headerStyle.textShadow,
         animation: headerStyle.animation,
       }}>
-        썰풀기
+        {headerTitle || '썰풀기'}
       </div>
       
       {/* 데코레이션 - 뒤 */}

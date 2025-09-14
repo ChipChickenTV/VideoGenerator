@@ -42,7 +42,7 @@ export const VideoSequence: React.FC<VideoSequenceProps> = ({
 		<PhoneFrame style={containerStyle}>
 			<AbsoluteFill style={containerStyle}>
 				{/* 1. 고정 템플릿 영역 */}
-				<Header templateStyle={templateStyle} />
+				<Header templateStyle={templateStyle} headerTitle={enrichedProps.headerTitle} />
 				<div
 					style={{
 						flex: 1,
