@@ -6,7 +6,15 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { VideoProps, VideoPropsSchema } from './src/types/VideoProps';
 import { renderVideo } from './src/renderer';
-import { uploadToSupabase } from './src/lib/supabase';
+import {
+  uploadToGoogleDrive,
+  ensureDrivePath,
+  extractDriveFileIdFromUrl,
+  extractDriveFolderIdFromUrl,
+  downloadDriveFile,
+  getDriveFileMetadata,
+  getFolderPath,
+} from './src/lib/drive';
 import { getAllAnimations, getTextAnimation, getImageAnimation, getTransitionAnimation } from './src/animations';
 import { TypedAnimationFunction } from './src/animations/types';
 import { analyze1DepthSchema, analyzeFieldSchema } from './src/utils/schemaAnalyzer';
@@ -16,6 +24,62 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+function getProxyBaseUrl(req: express.Request): string {
+  const forwardedProto = (req.headers['x-forwarded-proto'] as string | undefined)?.split(',')[0]?.trim();
+  const protocol = forwardedProto || req.protocol || 'http';
+  const host = req.get('host') || `localhost:${PORT}`;
+  return `${protocol}://${host}`.replace(/\/$/, '');
+}
+
+function toProxyUrl(baseUrl: string, fileId: string): string {
+  return `${baseUrl.replace(/\/$/, '')}/drive/file/${fileId}`;
+}
+
+function rewritePropsWithDriveProxy(props: VideoProps, proxyBaseUrl: string): VideoProps {
+  const originalMedia = props.media || [];
+  const transformUrl = (original?: string): string | undefined => {
+    if (!original) {
+      return original;
+    }
+    const fileId = extractDriveFileIdFromUrl(original);
+    return fileId ? toProxyUrl(proxyBaseUrl, fileId) : original;
+  };
+
+  const media = originalMedia.map((scene) => {
+    let mutated = false;
+    const nextScene = { ...scene };
+
+    if (scene.voice) {
+      const transformedVoice = transformUrl(scene.voice);
+      if (transformedVoice && transformedVoice !== scene.voice) {
+        nextScene.voice = transformedVoice;
+        mutated = true;
+      }
+    }
+
+    if (scene.image?.url) {
+      const transformedImageUrl = transformUrl(scene.image.url);
+      if (transformedImageUrl && transformedImageUrl !== scene.image.url) {
+        nextScene.image = { ...scene.image, url: transformedImageUrl };
+        mutated = true;
+      }
+    }
+
+    if (scene.script?.url) {
+      const transformedScriptUrl = transformUrl(scene.script.url);
+      if (transformedScriptUrl && transformedScriptUrl !== scene.script.url) {
+        nextScene.script = { ...scene.script, url: transformedScriptUrl };
+        mutated = true;
+      }
+    }
+
+    return mutated ? nextScene : scene;
+  });
+
+  const hasMutation = media.some((scene, index) => scene !== originalMedia[index]);
+  return hasMutation ? { ...props, media } : props;
+}
 
 // 미들웨어 설정
 app.use(cors());
@@ -156,6 +220,87 @@ app.get('/api/animations/:type/:name', (req, res) => {
   }
 });
 
+// Google Drive 파일 프록시 엔드포인트
+app.get('/drive/file/:fileId', async (req, res) => {
+  const { fileId } = req.params;
+
+  if (!fileId) {
+    return res.status(400).json({
+      success: false,
+      error: 'File ID is required',
+    });
+  }
+
+  try {
+    const rangeHeader = typeof req.headers.range === 'string' ? req.headers.range : undefined;
+    const { stream, metadata, headers, status } = await downloadDriveFile(fileId, { rangeHeader });
+
+    res.status(status || 200);
+
+    const forwardedHeaders = ['content-range', 'content-length', 'accept-ranges'];
+    forwardedHeaders.forEach((key) => {
+      const headerValue = headers[key];
+      if (headerValue && !res.getHeader(key)) {
+        res.setHeader(key, headerValue as string);
+      }
+    });
+
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    if (!res.getHeader('Accept-Ranges')) {
+      res.setHeader('Accept-Ranges', 'bytes');
+    }
+
+    if (metadata?.mimeType && !res.getHeader('Content-Type')) {
+      res.setHeader('Content-Type', metadata.mimeType);
+    } else if (!res.getHeader('Content-Type')) {
+      res.setHeader('Content-Type', 'application/octet-stream');
+    }
+
+    if (metadata?.name && !res.getHeader('Content-Disposition')) {
+      const encoded = encodeURIComponent(metadata.name);
+      res.setHeader('Content-Disposition', `inline; filename="${encoded}"; filename*=UTF-8''${encoded}`);
+    }
+
+    if (metadata?.size && !rangeHeader && !res.getHeader('Content-Length')) {
+      const numericSize = Number(metadata.size);
+      if (!Number.isNaN(numericSize)) {
+        res.setHeader('Content-Length', numericSize);
+      }
+    }
+
+    stream.on('error', (streamError) => {
+      console.error(`⚠️ Google Drive 스트림 오류 (fileId=${fileId})`, streamError);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: 'Failed to stream file from Google Drive',
+        });
+      } else {
+        res.destroy(streamError);
+      }
+    });
+
+    stream.pipe(res);
+  } catch (error: any) {
+    console.error(`❌ Google Drive 파일 프록시 실패 (fileId=${fileId})`, error?.message || error);
+
+    const statusCode = error?.response?.status || 500;
+    const errorMessage =
+      error?.response?.data?.error?.message ||
+      error?.message ||
+      'Failed to fetch file from Google Drive';
+
+    if (!res.headersSent) {
+      res.status(statusCode).json({
+        success: false,
+        error: errorMessage,
+      });
+    } else {
+      res.destroy(error);
+    }
+  }
+});
+
 
 
 
@@ -184,8 +329,15 @@ app.post('/render', async (req, res) => {
     }
     
     let props: VideoProps;
-    let bucket: string;
-    let supabaseVideoPath: string;
+    const driveRootFolderId = process.env.DRIVE_FOLDER_ID;
+
+    if (!driveRootFolderId) {
+      throw new Error('DRIVE_FOLDER_ID 환경 변수가 설정되어 있지 않습니다.');
+    }
+
+    let targetFolderId: string | undefined;
+    let targetFolderPathNames: string[] = [];
+    let outputFileName: string | undefined;
     
     if (inputUrl) {
       // 기존 방식: inputUrl에서 JSON 다운로드
@@ -200,16 +352,37 @@ app.post('/render', async (req, res) => {
       console.log('📄 JSON 다운로드 완료');
       props = rawData as VideoProps;
       
-      // inputUrl에서 버킷과 경로 추출
-      // 예: http://.../storage/v1/object/public/ssul/FinalResult/thziiv32gs_new.json
-      const urlParts = new URL(inputUrl);
-      const pathParts = urlParts.pathname.split('/');
-      
-      // "/storage/v1/object/public/".length = 5
-      bucket = pathParts[5];
-      const supabasePathPrefix = pathParts.slice(6, -1).join('/'); // 'FinalResult'
-      const jsonFilename = path.basename(urlParts.pathname, '.json');
-      supabaseVideoPath = `${supabasePathPrefix}/${jsonFilename}.mp4`;
+      const driveFileId = extractDriveFileIdFromUrl(inputUrl);
+      if (driveFileId) {
+        const metadata = await getDriveFileMetadata(driveFileId);
+
+        if (metadata?.parents?.length) {
+          targetFolderId = metadata.parents[0];
+          try {
+            targetFolderPathNames = await getFolderPath(targetFolderId, driveRootFolderId);
+          } catch (e) {
+            console.warn('⚠️ 드라이브 폴더 경로 조회 실패, 기본 경로로 대체합니다.', e);
+            targetFolderPathNames = [];
+          }
+        }
+
+        if (metadata?.name) {
+          const parsedName = path.parse(metadata.name);
+          outputFileName = `${parsedName.name}.mp4`;
+        }
+      }
+
+      if (!targetFolderId) {
+        const { id, segments } = await ensureDrivePath(driveRootFolderId, ['ChipChickenScience_Final']);
+        targetFolderId = id;
+        targetFolderPathNames = segments.map((segment) => segment.name);
+      }
+
+      if (!outputFileName) {
+        const urlParts = new URL(inputUrl);
+        const guessedName = path.parse(urlParts.pathname).name || `video_${Date.now()}`;
+        outputFileName = `${guessedName}.mp4`;
+      }
       
     } else {
       // 신규 방식: videoData 직접 사용
@@ -218,16 +391,67 @@ app.post('/render', async (req, res) => {
       
       // outputConfig에서 설정 추출
       const filename = outputConfig?.filename || `video_${Date.now()}`;
-      bucket = outputConfig?.bucket || 'ssul';
-      const pathPrefix = outputConfig?.path || 'videos';
-      supabaseVideoPath = `${pathPrefix}/${filename}.mp4`;
+      const rawPathValue = (outputConfig?.path ?? '').trim();
+      const rawBucketValue = (outputConfig?.bucket ?? '').trim();
+
+      const isLikelyDriveId = (value: string) => /^[a-zA-Z0-9_-]{10,}$/.test(value) && !value.includes('/');
+
+      let explicitFolderId: string | undefined;
+
+      if (rawPathValue) {
+        const fromUrl = extractDriveFolderIdFromUrl(rawPathValue);
+        if (fromUrl) {
+          explicitFolderId = fromUrl;
+        } else if (isLikelyDriveId(rawPathValue)) {
+          explicitFolderId = rawPathValue;
+        }
+      }
+
+      if (!explicitFolderId && rawBucketValue && isLikelyDriveId(rawBucketValue)) {
+        explicitFolderId = rawBucketValue;
+      }
+
+      if (explicitFolderId) {
+        targetFolderId = explicitFolderId;
+        try {
+          targetFolderPathNames = await getFolderPath(explicitFolderId, driveRootFolderId);
+        } catch (e) {
+          console.warn('⚠️ 지정된 드라이브 폴더 경로를 조회하지 못했습니다. (bucket/path)', e);
+          targetFolderPathNames = [];
+        }
+      } else {
+        const defaultBucket = rawBucketValue || 'ChipChickenScience_Final';
+        const rawSegments = rawPathValue.split('/').map((segment: string) => segment.trim()).filter(Boolean);
+        const folderSegments = [...rawSegments];
+
+        if (!folderSegments.length || folderSegments[0] !== defaultBucket) {
+          folderSegments.unshift(defaultBucket);
+        }
+
+        const ensured = await ensureDrivePath(driveRootFolderId, folderSegments);
+        targetFolderId = ensured.id;
+        targetFolderPathNames = ensured.segments.map((segment) => segment.name);
+      }
+
+      outputFileName = `${filename}.mp4`;
+    }
+
+    if (!targetFolderId) {
+      throw new Error('Google Drive 업로드 대상 폴더를 결정하지 못했습니다.');
+    }
+
+    if (!outputFileName) {
+      outputFileName = `video_${Date.now()}.mp4`;
     }
     
+    const proxyBaseUrl = getProxyBaseUrl(req);
+    const proxiedProps = rewritePropsWithDriveProxy(props, proxyBaseUrl);
+
     // 렌더링 실행
     const outputPath = `out/video_${Date.now()}.mp4`;
     console.log('🎬 비디오 렌더링 시작 (renderer 모듈 호출)...');
     
-    const result = await renderVideo(props, {
+    const result = await renderVideo(proxiedProps, {
       outputPath,
       codec: 'h264',
       verbose: true,
@@ -238,8 +462,24 @@ app.post('/render', async (req, res) => {
     if (result.success) {
       console.log(`✅ 렌더링 성공! (${result.duration}ms)`);
 
-      // Supabase에 업로드
-      const publicUrl = await uploadToSupabase(result.outputPath, bucket, supabaseVideoPath);
+      console.log(`📤 Google Drive 업로드 준비: ${targetFolderPathNames.join(' / ')} / ${outputFileName}`);
+
+      const uploadResult = await uploadToGoogleDrive(result.outputPath, {
+        targetFolderId,
+        fileName: outputFileName,
+        mimeType: 'video/mp4',
+      });
+
+      let resolvedFolderPath = targetFolderPathNames;
+      if (uploadResult.parents?.[0]) {
+        try {
+          resolvedFolderPath = await getFolderPath(uploadResult.parents[0], driveRootFolderId);
+        } catch (e) {
+          console.warn('⚠️ 업로드된 파일의 폴더 경로 조회에 실패했습니다.', e);
+        }
+      }
+
+      const uploadPath = [...resolvedFolderPath, uploadResult.name].join('/');
 
       // 로컬 파일 삭제
       try {
@@ -254,9 +494,11 @@ app.post('/render', async (req, res) => {
       res.json({
         success: true,
         message: 'Video rendering and upload completed successfully',
-        videoUrl: publicUrl,
+        videoUrl: uploadResult.publicUrl,
         duration: totalDuration,
-        uploadPath: supabaseVideoPath
+        uploadPath,
+        driveFileId: uploadResult.fileId,
+        driveWebViewUrl: uploadResult.webViewUrl
       });
     } else {
       console.error(`❌ 렌더링 실패: ${result.error}`);
