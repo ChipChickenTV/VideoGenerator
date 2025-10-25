@@ -54,6 +54,7 @@
     "render:cli": "ts-node -r tsconfig-paths/register render.ts",
     "render:video": "ts-node -r tsconfig-paths/register render.ts video --props-file input.json --verbose",
     "render:still": "ts-node -r tsconfig-paths/register render.ts still --props-file input.json --frame 0 --verbose",
+    "token:generate": "ts-node -r tsconfig-paths/register scripts/generate-google-token.ts",
     "api:dev": "ts-node -r tsconfig-paths/register server.ts",
     "api:build": "tsc server.ts --outDir dist",
     "api:start": "node dist/server.js"

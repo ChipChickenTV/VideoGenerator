@@ -1,6 +1,7 @@
 import { drive, drive_v3 } from '@googleapis/drive';
 import { OAuth2Client } from 'google-auth-library';
 import { createReadStream } from 'fs';
+import { loadPersistedRefreshTokenSync, persistRefreshTokenSync } from './googleTokens';
 import { Readable } from 'stream';
 
 const DRIVE_SCOPES = ['https://www.googleapis.com/auth/drive'];
@@ -15,14 +16,31 @@ function getOAuthClient(): OAuth2Client {
   }
 
   const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_REDIRECT_URI } = process.env;
+  const persistedRefreshToken = loadPersistedRefreshTokenSync();
+  const refreshToken = persistedRefreshToken || GOOGLE_REFRESH_TOKEN;
 
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REFRESH_TOKEN) {
-    throw new Error('Google OAuth 자격 증명(GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET/GOOGLE_REFRESH_TOKEN)이 .env에 설정되어 있지 않습니다.');
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !refreshToken) {
+    throw new Error('Google OAuth 자격 증명(GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET/GOOGLE_REFRESH_TOKEN) 또는 저장된 리프레시 토큰이 존재하지 않습니다.');
   }
 
   const redirectUri = GOOGLE_REDIRECT_URI || 'urn:ietf:wg:oauth:2.0:oob';
   const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri);
-  client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN, scope: DRIVE_SCOPES.join(' ') });
+
+  client.on('tokens', (tokens) => {
+    if (tokens.refresh_token && tokens.refresh_token.trim()) {
+      const current = loadPersistedRefreshTokenSync();
+      if (tokens.refresh_token !== current) {
+        try {
+          persistRefreshTokenSync(tokens.refresh_token);
+          console.log('💾 새로운 Google 리프레시 토큰을 저장했습니다.');
+        } catch (error) {
+          console.warn('⚠️ Google 리프레시 토큰 저장에 실패했습니다.', error);
+        }
+      }
+    }
+  });
+
+  client.setCredentials({ refresh_token: refreshToken, scope: DRIVE_SCOPES.join(' ') });
 
   oauthClient = client;
   return client;
@@ -182,10 +200,20 @@ export async function uploadToGoogleDrive(localPath: string, options: UploadToDr
           role: 'reader',
         },
       });
-    } catch (error: any) {
-      const message = error?.errors?.[0]?.message || error?.message || '';
-      if (!message.includes('cannotAddMyself') && !message.includes('alreadyExists')) {
-        console.warn(`⚠️ 공개 퍼미션 설정 중 오류가 발생했습니다. (${message})`);
+    } catch (error: unknown) {
+      const apiErrorMessage = (() => {
+        if (typeof error === 'object' && error !== null && 'errors' in error) {
+          const errorsField = (error as { errors?: Array<{ message?: string }> }).errors;
+          if (Array.isArray(errorsField)) {
+            return errorsField[0]?.message ?? '';
+          }
+        }
+
+        return error instanceof Error ? error.message : '';
+      })();
+
+      if (!apiErrorMessage.includes('cannotAddMyself') && !apiErrorMessage.includes('alreadyExists')) {
+        console.warn(`⚠️ 공개 퍼미션 설정 중 오류가 발생했습니다. (${apiErrorMessage})`);
       }
     }
   }
